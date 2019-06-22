@@ -15,6 +15,7 @@ class Stringer{
             this.innerLength = 0;
         }
     }
+ 
     
     toString(){
         let result = this.innerString;
@@ -31,11 +32,3 @@ class Stringer{
         return result;
     }
 }
-
-let test = new Stringer("Test", 5);
-console.log(test.toString()); // Test
-
-test.decrease(3);
-console.log(test.toString()); // Te...
-
-
