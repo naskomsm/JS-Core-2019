@@ -33,7 +33,7 @@ describe('append should work properly', function () {
 describe('Prepend should work properly', function () {
     it('Should prepend properly', function () {
         let current = new StringBuilder('4, minus 1 thats 3 quick maths');
-        current.prepend('2 + 2 is = ');
+        current.prepend('2 + s2 is = ');
         assert.equal('2 + 2 is = 4, minus 1 thats 3 quick maths', current.toString());
     });
 
