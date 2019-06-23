@@ -4,14 +4,14 @@ class CheckingAccount {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.arrayOfProducts = [];
+        this.products = [];
     }
 
-    get clientId(){
+    get clientId() {
         return this._clientId;
     }
 
-    set clientId(clientId){
+    set clientId(clientId) {
         const pattern = /^\d{6}$/;
 
         if (!pattern.test(clientId)) {
@@ -21,11 +21,11 @@ class CheckingAccount {
         this._clientId = clientId;
     }
 
-    get email(){
+    get email() {
         return this._email;
     }
 
-    set email(email){
+    set email(email) {
         const pattern = /^\w+@[\w\\.]+$/;
 
         if (!pattern.test(email)) {
@@ -35,11 +35,11 @@ class CheckingAccount {
         this._email = email;
     }
 
-    get firstName(){
+    get firstName() {
         return this._firstName;
     }
 
-    set firstName(firstName){
+    set firstName(firstName) {
         if (firstName.length < 3 || firstName.length > 20) {
             throw new TypeError('First name must be between 3 and 20 characters long');
         }
@@ -53,11 +53,11 @@ class CheckingAccount {
         this._firstName = firstName;
     }
 
-    get lastName(){
+    get lastName() {
         return this._secondName;
     }
 
-    set lastName(secondName){
+    set lastName(secondName) {
         if (secondName.length < 3 || secondName.length > 20) {
             throw new TypeError('Last name must be between 3 and 20 characters long');
         }
