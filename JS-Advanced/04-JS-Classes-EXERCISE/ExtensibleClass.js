@@ -16,8 +16,6 @@
             }
         }
     }
-
-    window.Extensible;
 })();
 
 let obj1 = new Extensible();
