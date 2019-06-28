@@ -32,13 +32,13 @@ class Kitchen{
         return this.actionsHistory.join('\n');
     }
 
-    addToMenu(mealName,neededProducts,price){
+    addToMenu(mealName,products,price){
         if (this.menu.hasOwnProperty(mealName)) {
             return `The ${mealName} is already in our menu, try something different.`;
         }
 
         this.menu[mealName] = {
-            neededProducts,
+            products,
             price: +price
         };
 
@@ -64,8 +64,8 @@ class Kitchen{
         } 
         else{
             let haveProductsNeeded = false;
-            for (const productToCheck in this.menu[mealName].neededProducts) {
-                let productInfo = this.menu[mealName].neededProducts[productToCheck].split(' ');
+            for (const productToCheck in this.menu[mealName].products) {
+                let productInfo = this.menu[mealName].products[productToCheck].split(' ');
                 let productToCheckName = productInfo[0];
                 let productToCheckQuantity = +productInfo[1];
 
@@ -81,8 +81,8 @@ class Kitchen{
             //if we dont have the products
             //if we have it
             if(haveProductsNeeded){
-                for (const productToCheck in this.menu[mealName].neededProducts) {
-                    let productInfo = this.menu[mealName].neededProducts[productToCheck].split(' ');
+                for (const productToCheck in this.menu[mealName].products) {
+                    let productInfo = this.menu[mealName].products[productToCheck].split(' ');
                     let productToCheckName = productInfo[0];
                     let productToCheckQuantity = +productInfo[1];
     
