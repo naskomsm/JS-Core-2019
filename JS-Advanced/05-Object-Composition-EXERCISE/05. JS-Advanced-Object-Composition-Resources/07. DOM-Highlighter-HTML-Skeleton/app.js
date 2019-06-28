@@ -1,15 +1,16 @@
 function solve(selector) {
-    let nodes = document.querySelectorAll(selector);
-    
+  let element = document.querySelector(selector);
 
-    allDescendants(nodes);
-    function allDescendants (node) {
-        for (var i = 0; i < node.childNodes.length; i++) {
-          var child = node.childNodes[i];
-          allDescendants(child);
-          child.classList.add('highlight');
-        }
+  (function changeClass(element) {
+    if (element.hasChildNodes()) {
+      element.className += ' highlight';
+      
+      changeClass(Array.from(element.childNodes)
+      .sort((a, b) => b.childNodes.length - a.childNodes.length)[0]);
+
+
     }
+  })(element);
 }
 
 solve('#content');
