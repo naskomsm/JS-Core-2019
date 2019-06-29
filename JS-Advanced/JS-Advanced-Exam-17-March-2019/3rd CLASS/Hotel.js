@@ -29,28 +29,30 @@ class Hotel {
     }
 
     rentARoom(clientName, roomType, nights) {
-        let room = this.rooms[roomType];
-        if (room === 0) {
-            let info = '';
-            info += `No ${roomType} rooms available!`;
-            for (let room in this.rooms) {
-                if (this.rooms[room] > 0) {
-                    info += ` Available ${room} rooms: ${this.rooms[room]}.`;
-                }
-            }
-            return info;
-        } else {
- 
-            let client = {
-                name: clientName,
+        if (this.rooms[roomType] > 0) {
+            let currentClientBooking = {
+                clientName: clientName,
                 roomType: roomType,
                 nights: nights,
-                roomNumber: this.currentBookingNumber,
-            };
-            this.bookings.push(client);
+                roomNumber: this.currentBookingNumber
+            }
+
+            this.bookings.push(currentClientBooking);
             this.currentBookingNumber++;
             this.rooms[roomType]--;
-            return `Enjoy your time here Mr./Mrs. ${clientName}. Your booking is ${client.roomNumber}.`
+
+            return `Enjoy your time here Mr./Mrs. ${clientName}. Your booking is ${currentClientBooking.roomNumber}.`;
+        }
+
+        else {
+            let result = `No ${roomType} rooms available!`;
+            for (const room in this.rooms) {
+                if (this.rooms[room] > 0) {
+                    result += ` Available ${room} rooms: ${this.rooms[room]}.`;
+                }
+            }
+
+            return result;
         }
     }
 
@@ -71,7 +73,7 @@ class Hotel {
         }
 
         searchedBooking['services'].push(serviceType);
-        return `Mr./Mrs. ${searchedBooking.name}, Your order for ${serviceType} service has been successful.`;
+        return `Mr./Mrs. ${searchedBooking.clientName}, Your order for ${serviceType} service has been successful.`;
     }
 
     checkOut(currentBookingNumber) {
@@ -95,13 +97,13 @@ class Hotel {
         this.bookings.splice(index,1);
 
         if (totalServiceMoney > 0){
-            return `We hope you enjoyed your time here, Mr./Mrs. ${searchedBooking.name}. The total amount of money you have to pay is ${totalMoney + totalServiceMoney} BGN. You have used additional room services, costing ${totalServiceMoney} BGN.`;
+            return `We hope you enjoyed your time here, Mr./Mrs. ${searchedBooking.clientName}. The total amount of money you have to pay is ${totalMoney + totalServiceMoney} BGN. You have used additional room services, costing ${totalServiceMoney} BGN.`;
         }
         
-        return`We hope you enjoyed your time here, Mr./Mrs. ${searchedBooking.name}. The total amount of money you have to pay is ${totalMoney} BGN.`;
+        return`We hope you enjoyed your time here, Mr./Mrs. ${searchedBooking.clientName}. The total amount of money you have to pay is ${totalMoney} BGN.`;
     }
 
-    report() {
+    report() { // here was the problem...
         let report = [];
         report.push(`${this.name.toUpperCase()} DATABASE:`);
         report.push('--------------------');
@@ -113,7 +115,7 @@ class Hotel {
         for (let i = 0; i < this.bookings.length; i++) {
             let client = this.bookings[i];
             report.push(`bookingNumber - ${client.roomNumber}`);
-            report.push(`clientName - ${client.name}`);
+            report.push(`clientName - ${client.clientName}`);
             report.push(`roomType - ${client.roomType}`);
             report.push(`nights - ${client.nights}`);
  
