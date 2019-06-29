@@ -5,10 +5,10 @@ class Hotel {
         this.bookings = [];
         this.currentBookingNumber = 1;
 
-        this._roomsAvailable = {
-            single: Math.floor(this.capacity * 0.5), // 5
-            double: Math.floor(this.capacity * 0.3), // 3
-            maisonette: Math.floor(this.capacity * 0.2) // 2
+        this.rooms = {
+            single: this.capacity * 0.5, // 5
+            double: this.capacity * 0.3, // 3
+            maisonette: this.capacity * 0.2 // 2
         }
     }
 
@@ -29,31 +29,29 @@ class Hotel {
     }
 
     rentARoom(clientName, roomType, nights) {
-        let result = '';
-
-        if (this._roomsAvailable[roomType] > 0) {
-            let currentClientBooking = {
-                clientName: clientName,
-                roomType: roomType,
-                nights: +nights,
-                roomNumber: this.currentBookingNumber
-            }
-
-            this._roomsAvailable[roomType]--;
-            this.bookings.push(currentClientBooking);
-            result += `Enjoy your time here Mr./Mrs. ${clientName}. Your booking is ${this.currentBookingNumber++}.`;
-        }
-
-        else {
-            result += `No ${roomType} rooms available! `;
-            for (const key in this._roomsAvailable) {
-                if (key !== roomType) {
-                    result += `Available ${key} rooms: ${this._roomsAvailable[key]}. `;
+        let room = this.rooms[roomType];
+        if (room === 0) {
+            let info = '';
+            info += `No ${roomType} rooms available!`;
+            for (let room in this.rooms) {
+                if (this.rooms[room] > 0) {
+                    info += ` Available ${room} rooms: ${this.rooms[room]}.`;
                 }
             }
+            return info;
+        } else {
+ 
+            let client = {
+                name: clientName,
+                roomType: roomType,
+                nights: nights,
+                roomNumber: this.currentBookingNumber,
+            };
+            this.bookings.push(client);
+            this.currentBookingNumber++;
+            this.rooms[roomType]--;
+            return `Enjoy your time here Mr./Mrs. ${clientName}. Your booking is ${client.roomNumber}.`
         }
-
-        return result.trim();
     }
 
     roomService(currentBookingNumber, serviceType) {
@@ -69,11 +67,11 @@ class Hotel {
         }
 
         if (!searchedBooking.hasOwnProperty('services')) {
-            searchedBooking.services = [];
+            searchedBooking['services'] = [];
         }
 
         searchedBooking['services'].push(serviceType);
-        return `Mr./Mrs. ${searchedBooking.clientName}, Your order for ${serviceType} service has been successful.`;
+        return `Mr./Mrs. ${searchedBooking.name}, Your order for ${serviceType} service has been successful.`;
     }
 
     checkOut(currentBookingNumber) {
@@ -83,64 +81,62 @@ class Hotel {
             return `The booking ${currentBookingNumber} is invalid.`;
         }
 
-        let totalPrice = 0;
+        let totalMoney =  this.roomsPricing[searchedBooking.roomType] * searchedBooking.nights;
         let totalServiceMoney = 0
-        this._roomsAvailable[searchedBooking.roomType]++;
-
-        let result = '';
-
-        if (searchedBooking.roomType === 'single') {
-            totalPrice += 50 * searchedBooking.nights;
-        }
-        else if (searchedBooking.roomType === 'double') {
-            totalPrice += 90 * searchedBooking.nights;
-        }
-        else if (searchedBooking.roomType === 'maisonette') {
-            totalPrice += 135 * searchedBooking.nights;
-        }
-
-        result += `We hope you enjoyed your time here, Mr./Mrs. ${searchedBooking.clientName}. The total amount of money you have to pay is ${totalPrice} BGN.`;
-
+        
         if (searchedBooking.hasOwnProperty('services')) {
-            for (const service of searchedBooking.services) {
-                if (service === 'food') totalServiceMoney += 10;
-                else if (service === 'drink') totalServiceMoney += 15;
-                else if (service === 'housekeeping') totalServiceMoney += 25;
+            for (let i = 0; i < searchedBooking.services.length; i++) {
+                totalServiceMoney += this.servicesPricing[searchedBooking.services[i]];
             }
-
-            result += ` You have used additional room services, costing ${totalServiceMoney} BGN.`;
         }
+        
+        this.rooms[searchedBooking.roomType]++;
+        let index = this.bookings.indexOf(searchedBooking);
+        this.bookings.splice(index,1);
 
-        return result;
+        if (totalServiceMoney > 0){
+            return `We hope you enjoyed your time here, Mr./Mrs. ${searchedBooking.name}. The total amount of money you have to pay is ${totalMoney + totalServiceMoney} BGN. You have used additional room services, costing ${totalServiceMoney} BGN.`;
+        }
+        
+        return`We hope you enjoyed your time here, Mr./Mrs. ${searchedBooking.name}. The total amount of money you have to pay is ${totalMoney} BGN.`;
     }
 
     report() {
-        let result = `${this.name.toUpperCase()} DATABASE:\n`;
-        result += '--------------------\n';
+        let report = [];
+        report.push(`${this.name.toUpperCase()} DATABASE:`);
+        report.push('--------------------');
+ 
         if (this.bookings.length === 0) {
-            result += `There are currently no bookings.\n`;
-            return result;
+            report.push('There are currently no bookings.');
+            return report.join('\n');
         }
-
-        for (const person of this.bookings) {
-            result += `bookingNumber – ${person.roomNumber}\n`;
-            result += `clientName – ${person.clientName}\n`
-            result += `roomType – ${person.roomType}\n`;
-            result += `nights – ${person.nights}\n`;
-
-            if (person.hasOwnProperty('services')) {
-                result += `services: `;
-                result += person.services.join(', ');
-                result += '\n';
+        for (let i = 0; i < this.bookings.length; i++) {
+            let client = this.bookings[i];
+            report.push(`bookingNumber - ${client.roomNumber}`);
+            report.push(`clientName - ${client.name}`);
+            report.push(`roomType - ${client.roomType}`);
+            report.push(`nights - ${client.nights}`);
+ 
+            if (client.hasOwnProperty('services') && client.services.length) {
+                report.push(`services: ${client.services.join(', ')}`);
             }
-
-            result += `----------\n`;
+            report.push(`----------`)
         }
-
-        return result;
+        report.pop();
+        return report.join('\n');
     }
 }
 
-let hotel = new Hotel('HotUni', 11);
-console.log(hotel._roomsAvailable.maisonette);
+let hotel = new Hotel('HotUni', 10);
+
+hotel.rentARoom('Peter', 'single', 4);
+hotel.rentARoom('Robert', 'double', 4);
+hotel.rentARoom('Geroge', 'maisonette', 6);
+
+hotel.roomService(3, 'housekeeping');
+hotel.roomService(3, 'drink');
+hotel.roomService(2, 'room');
+
+console.log(hotel.report());
+
 

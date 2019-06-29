@@ -1,5 +1,4 @@
 class FilmStudio {
-
     constructor(studioName) {
         this.name = studioName;
         this.films = [];
@@ -39,7 +38,6 @@ class FilmStudio {
     }
 
     makeMovie(filmName, roles) {
-
         if (arguments.length === 2) {
 
             let firstArgIsString = typeof arguments[0] === 'string';
