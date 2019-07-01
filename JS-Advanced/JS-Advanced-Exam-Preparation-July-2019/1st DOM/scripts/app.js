@@ -16,9 +16,9 @@ function acceptance() {
 				warehouse.appendChild(product);
 
 				let allButtons = document.getElementsByTagName('button');
-				[...allButtons].forEach((button) =>{
-					if(button.innerHTML === 'Out of stock'){
-						button.addEventListener('click',removeProduct);
+				[...allButtons].forEach((button) => {
+					if (button.innerHTML === 'Out of stock') {
+						button.addEventListener('click', removeProduct);
 					}
 				})
 
@@ -27,7 +27,7 @@ function acceptance() {
 		}
 	}
 
-	function removeProduct(){
+	function removeProduct() {
 		let product = this.parentNode;
 		document.getElementById('warehouse').removeChild(product);
 	}
