@@ -1,7 +1,6 @@
 function solve() {
    const validKingdomNames = ['CASTLE', 'DUNGEON', 'FORTRESS', 'INFERNO', 'NECROPOLIS', 'RAMPART', 'STRANGHOLD', 'TOWER', 'CONFLUX'];
 
-   // seems to be working fine
    let rebuildButton = document.getElementsByTagName('button')[0];
    rebuildButton.addEventListener('click', rebuildOnClick);
    function rebuildOnClick() {
@@ -95,7 +94,7 @@ function solve() {
       if (kingdomExist) {
          let id = kingdomName.value.toLowerCase();
          let element = document.getElementById(id);
-         
+
          let fieldsetInfo = element.children[3];
 
          if (allRadioCheckers[0].checked) { // TANK
@@ -112,7 +111,7 @@ function solve() {
             let mageParagraph = fieldsetInfo.children[3];
             let text = mageParagraph.textContent.split(' - ');
 
-            let type = text[0]; // mages
+            let type = text[0]; // MAGES
             let count = +text[1]; // 0
             count++;
 
@@ -122,7 +121,7 @@ function solve() {
             let tankParagraph = fieldsetInfo.children[1];
             let text = tankParagraph.textContent.split(' - ');
 
-            let type = text[0]; // fighters
+            let type = text[0]; // FIGHTERS
             let count = +text[1]; // 0
             count++;
 
@@ -132,103 +131,111 @@ function solve() {
          let divArmyOutput = fieldsetInfo.children[4];
          divArmyOutput.textContent += characterName.value + ' ';
       }
-      else {
+
+      else { // again reset fields if input is invalid
          kingdomName.value = '';
          characterName.value = '';
       }
    }
 
-   // let attackButton = document.getElementsByTagName('button')[2];
-   // attackButton.addEventListener('click', attackOnClick);
-   // function attackOnClick() {
-   //    let isEverythingOk = true;
+   let attackButton = document.getElementsByTagName('button')[2];
+   attackButton.addEventListener('click', attackOnClick);
+   function attackOnClick() {
+      let actionsSection = document.getElementById('actions');
 
-   //    let actionsSection = document.getElementById('actions');
+      let attackerInputFiled = actionsSection.children[1];
+      let deffenderInputField = actionsSection.children[2];
 
-   //    let attacker = actionsSection.children[1];
-   //    let deffender = actionsSection.children[2];
+      if (!validKingdomNames.includes(attackerInputFiled.value.toUpperCase()) || !validKingdomNames.includes(deffenderInputField.value.toUpperCase())) {
+         return;
+      }
 
-   //    if (!validKingdomNames.includes(attacker.value.toUpperCase()) || !validKingdomNames.includes(deffender.value.toUpperCase())) {
-   //       isEverythingOk = false;
-   //    }
+      if (attackerInputFiled.value.length === 0 && deffenderInputField.value.length === 0) {
+         return;
+      }
 
-   //    if (attacker.value.length > 0 && deffender.value.length > 0) {
-   //       let idOfAttacker = attacker.value.toLowerCase();
-   //       let element = document.getElementById(idOfAttacker);
+      let idOfAttacker = attackerInputFiled.value.toLowerCase();
+      let attackerElement = document.getElementById(idOfAttacker);
 
-   //       let idOfDeffender = deffender.value.toLowerCase();
-   //       let element2 = document.getElementById(idOfDeffender);
+      let idOfDeffender = deffenderInputField.value.toLowerCase();
+      let deffenderElement = document.getElementById(idOfDeffender);
 
-   //       if (element.style.display === 'none' || element2.style.display === 'none') {
-   //          isEverythingOk = false;
-   //       }
+      function checkBothKingdomsExistence(){
+         if (attackerElement.style.display === 'none' || deffenderElement.style.display === 'none') {
+            return false;
+         }
+         
+         return true;
+      }
 
-   //       if (isEverythingOk) {
-   //          let attackerKingdom = document.getElementById(attacker.value);
-   //          let deffenderKingdom = document.getElementById(deffender.value);
+      let bothKingdomsExist = checkBothKingdomsExistence();
 
-   //          let attackerAttackPoints = 0;
-   //          let attackerFieldset = attackerKingdom.children[3];
-   //          let heroesArray = [];
-   //          heroesArray.push(attackerFieldset.children[1]);
-   //          heroesArray.push(attackerFieldset.children[2]);
-   //          heroesArray.push(attackerFieldset.children[3]);
-   //          for (const hero of heroesArray) {
-   //             let info = hero.innerHTML.split(' - ');
-   //             let type = info[0]
-   //             let count = +info[1];
+      if (bothKingdomsExist) {
+         let attackerKingdomName = document.getElementById(attackerInputFiled.value);
+         let deffenderKingdomName = document.getElementById(deffenderInputField.value);
 
-   //             if (count > 0) {
-   //                if (type === 'TANKS') {
-   //                   attackerAttackPoints += 20 * count;
-   //                }
-   //                else if (type === 'FIGHTERS') {
-   //                   attackerAttackPoints += 50 * count;
-   //                }
-   //                else if (type === 'MAGES') {
-   //                   attackerAttackPoints += 70 * count;
-   //                }
-   //             }
-   //          }
+         let attackerAttackPoints = 0;
+         let deffenderAttackPoints = 0;
+         function calculateAttackPoints(){
+            let attackerFieldset = attackerKingdomName.children[3];
+            let heroesArray = [];
+            heroesArray.push(attackerFieldset.children[1]);
+            heroesArray.push(attackerFieldset.children[2]);
+            heroesArray.push(attackerFieldset.children[3]);
+            for (const hero of heroesArray) {
+               let info = hero.innerHTML.split(' - ');
+               let type = info[0]
+               let count = +info[1];
+   
+               if (count > 0) {
+                  if (type === 'TANKS') {
+                     attackerAttackPoints += 20 * count;
+                  }
+                  else if (type === 'FIGHTERS') {
+                     attackerAttackPoints += 50 * count;
+                  }
+                  else if (type === 'MAGES') {
+                     attackerAttackPoints += 70 * count;
+                  }
+               }
+            }
+   
+            let deffenderFieldset = deffenderKingdomName.children[3];
+            heroesArray = [];
+            heroesArray.push(deffenderFieldset.children[1]);
+            heroesArray.push(deffenderFieldset.children[2]);
+            heroesArray.push(deffenderFieldset.children[3]);
+            for (const hero of heroesArray) {
+               let info = hero.innerHTML.split(' - ');
+               let type = info[0]
+               let count = +info[1];
+   
+               if (count > 0) {
+                  if (type === 'TANKS') {
+                     deffenderAttackPoints += 20 * count;
+                  }
+                  else if (type === 'FIGHTERS') {
+                     deffenderAttackPoints += 50 * count;
+                  }
+                  else if (type === 'MAGES') {
+                     deffenderAttackPoints += 70 * count;
+                  }
+               }
+            }
+         }
 
-   //          let deffenderAttackPoints = 0;
-   //          let deffenderFieldset = deffenderKingdom.children[3];
-   //          heroesArray = [];
-   //          heroesArray.push(deffenderFieldset.children[1]);
-   //          heroesArray.push(deffenderFieldset.children[2]);
-   //          heroesArray.push(deffenderFieldset.children[3]);
-   //          for (const hero of heroesArray) {
-   //             let info = hero.innerHTML.split(' - ');
-   //             let type = info[0]
-   //             let count = +info[1];
+         calculateAttackPoints();
 
-   //             if (count > 0) {
-   //                if (type === 'TANKS') {
-   //                   deffenderAttackPoints += 20 * count;
-   //                }
-   //                else if (type === 'FIGHTERS') {
-   //                   deffenderAttackPoints += 50 * count;
-   //                }
-   //                else if (type === 'MAGES') {
-   //                   deffenderAttackPoints += 70 * count;
-   //                }
-   //             }
-   //          }
+         if (attackerAttackPoints > deffenderAttackPoints) {
+            deffenderElement.children[2].textContent = attackerElement.children[2].textContent;
+         }
+      }
 
-   //          if (attackerAttackPoints > deffenderAttackPoints) {
-   //             element2.children[2].textContent = element.children[2].textContent;
-   //          }
-   //       }
-   //       else{
-   //          attacker.value = '';
-   //          deffender.value = '';
-   //       }
-   //    }
-   //    else{
-   //       attacker.value = '';
-   //       deffender.value = '';
-   //    }
-   // }
+      else {
+         attackerInputFiled.value = '';
+         deffenderInputField.value = '';
+      }
+   }
 }
 
 solve();
