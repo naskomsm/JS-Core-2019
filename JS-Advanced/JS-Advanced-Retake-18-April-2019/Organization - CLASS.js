@@ -70,21 +70,21 @@ class Organization {
         this.employees.filter(x => x.department === 'marketing')
             .sort((a, b) => b.salary - a.salary)
             .forEach((employee) => marketingEmployeesNames.push(employee.employeeName));
-        result += `\nMarketing | Employees: ${marketingEmployeesNames.length}: ${marketingEmployeesNames.join(', ')} |  Remaining Budget: ${this.departmentsBudget['marketing']}`;
+        result += `\nMarketing | Employees: ${marketingEmployeesNames.length}: ${marketingEmployeesNames.join(', ')} | Remaining Budget: ${this.departmentsBudget['marketing']}`;
 
         //finance
         let finaceEmployeesNames = [];
-        this.employees.filter(x => x.department === 'fiance')
+        this.employees.filter(x => x.department === 'finance')
             .sort((a, b) => b.salary - a.salary)
             .forEach((employee) => finaceEmployeesNames.push(employee.employeeName));
-        result += `\nFinance | Employees: ${finaceEmployeesNames.length}: ${finaceEmployeesNames.join(', ')} |  Remaining Budget: ${this.departmentsBudget['finance']}`;
+        result += `\nFinance | Employees: ${finaceEmployeesNames.length}: ${finaceEmployeesNames.join(', ')} | Remaining Budget: ${this.departmentsBudget['finance']}`;
 
         //production
         let productionEmployeesNames = [];
         this.employees.filter(x => x.department === 'production')
             .sort((a, b) => b.salary - a.salary)
             .forEach((employee) => productionEmployeesNames.push(employee.employeeName));
-        result += `\nProduction | Employees: ${productionEmployeesNames.length}: ${productionEmployeesNames.join(', ')} |  Remaining Budget: ${this.departmentsBudget['production']}`;
+        result += `\nProduction | Employees: ${productionEmployeesNames.length}: ${productionEmployeesNames.join(', ')} | Remaining Budget: ${this.departmentsBudget['production']}`;
 
         return result;
     }
