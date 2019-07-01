@@ -15,21 +15,9 @@ function acceptance() {
 				let product = createProduct(shippingCompany, productName, productQuantity, productScrape);
 				warehouse.appendChild(product);
 
-				let allButtons = document.getElementsByTagName('button');
-				[...allButtons].forEach((button) => {
-					if (button.innerHTML === 'Out of stock') {
-						button.addEventListener('click', removeProduct);
-					}
-				})
-
 				resetValues();
 			}
 		}
-	}
-
-	function removeProduct() {
-		let product = this.parentNode;
-		document.getElementById('warehouse').removeChild(product);
 	}
 
 	function resetValues() {
@@ -45,6 +33,7 @@ function acceptance() {
 
 		let outOfStockButton = document.createElement('button');
 		outOfStockButton.innerHTML = `Out of stock`;
+		outOfStockButton.addEventListener('click', () => div.remove());
 
 		p.innerHTML = `[${shippingCompany}] ${productName} - ${productQuantity - productScrape} pieces`;
 
