@@ -1,50 +1,56 @@
 function acceptance() {
 	let addButton = document.getElementById('acceptance');
-	addButton.addEventListener('click', onClick);
+	addButton.addEventListener('click', addProduct);
 
-	function removeProduct() {
-		let parent = this.parentNode; // div to remove
-		document.getElementById('warehouse').removeChild(parent);
-	};
-
-	function onClick() {
+	function addProduct() {
 		let shippingCompany = document.getElementsByName('shippingCompany')[0].value;
 		let productName = document.getElementsByName('productName')[0].value;
-		let productQuantity = document.getElementsByName('productQuantity')[0].value;
-		let productScrape = document.getElementsByName('productScrape')[0].value;
+		let productQuantity = +document.getElementsByName('productQuantity')[0].value;
+		let productScrape = +document.getElementsByName('productScrape')[0].value;
 
 		if (shippingCompany !== '' && productName !== '' && !isNaN(productQuantity) && !isNaN(productScrape)) {
 			if (productQuantity - productScrape > 0) {
-				addProduct(shippingCompany, productName, productQuantity, productScrape);
+				let warehouse = document.getElementById('warehouse');
 
-				let removeButtons = [...document.getElementsByTagName('button')];
-				removeButtons.forEach((removeButton) => {
-					if (removeButton.innerHTML === 'Out of stock') {
-						removeButton.addEventListener('click', removeProduct);
+				let product = createProduct(shippingCompany, productName, productQuantity, productScrape);
+				warehouse.appendChild(product);
+
+				let allButtons = document.getElementsByTagName('button');
+				[...allButtons].forEach((button) =>{
+					if(button.innerHTML === 'Out of stock'){
+						button.addEventListener('click',removeProduct);
 					}
-				});
+				})
+
+				resetValues();
 			}
-
-			document.getElementsByName('shippingCompany')[0].value = '';
-			document.getElementsByName('productName')[0].value = '';
-			document.getElementsByName('productQuantity')[0].value = '';
-			document.getElementsByName('productScrape')[0].value = '';
 		}
-	};
+	}
 
-	function addProduct(shippingCompany, productName, productQuantity, productScrape) {
+	function removeProduct(){
+		let product = this.parentNode;
+		document.getElementById('warehouse').removeChild(product);
+	}
+
+	function resetValues() {
+		document.getElementsByName('shippingCompany')[0].value = '';
+		document.getElementsByName('productName')[0].value = '';
+		document.getElementsByName('productQuantity')[0].value = '';
+		document.getElementsByName('productScrape')[0].value = '';
+	}
+
+	function createProduct(shippingCompany, productName, productQuantity, productScrape) {
 		let div = document.createElement('div');
 		let p = document.createElement('p');
-		let button = document.createElement('button');
 
-		button.textContent = 'Out of stock';
-		let pieces = productQuantity - productScrape;
-		p.textContent = `[${shippingCompany}] ${productName} - ${pieces} pieces`;
+		let outOfStockButton = document.createElement('button');
+		outOfStockButton.innerHTML = `Out of stock`;
+
+		p.innerHTML = `[${shippingCompany}] ${productName} - ${productQuantity - productScrape} pieces`;
 
 		div.appendChild(p);
-		div.appendChild(button);
+		div.appendChild(outOfStockButton);
 
-		let warehouse = document.getElementById('warehouse');
-		warehouse.appendChild(div);
-	};
+		return div;
+	}
 }
