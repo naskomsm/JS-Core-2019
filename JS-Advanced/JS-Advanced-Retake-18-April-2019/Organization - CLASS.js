@@ -2,8 +2,8 @@ class Organization {
 
     constructor(name, budget) {
         this.name = name;
-        this.employees = [];
         this.budget = budget;
+        this.employees = [];
 
         this.deparments = {
             marketing: 0.4 * this.budget,
@@ -21,9 +21,9 @@ class Organization {
     }
 
     add(employeeName, department, salary) {
-        let requestedDepartmentBudget = this.departmentsBudget[department];
-        if (requestedDepartmentBudget < salary) {
-            return `The salary that ${department} department can offer to you Mr./Mrs. ${employeeName} is ${requestedDepartmentBudget}.`;
+        let departmentBudget = this.departmentsBudget[department];
+        if (departmentBudget < salary) {
+            return `The salary that ${department} department can offer to you Mr./Mrs. ${employeeName} is $${departmentBudget}.`;
         }
 
         let object = {
@@ -33,8 +33,8 @@ class Organization {
         }
 
         this.employees.push(object);
+        this.deparments[department] -= salary;
 
-        this.deparments[department] -= salary; // problem
         return `Welcome to the ${department} team Mr./Mrs. ${employeeName}.`
     }
 
@@ -48,7 +48,7 @@ class Organization {
         return `Mr./Mrs. ${searchedEmployee.employeeName} is part of the ${searchedEmployee.department} department.`;
     }
 
-    leaveOrganisation(employeeName) {
+    leaveOrganization(employeeName) {
         let searchedEmployee = this.employees.find(x => x.employeeName === employeeName);
 
         if (!searchedEmployee) {
@@ -57,20 +57,20 @@ class Organization {
 
         let index = this.employees.indexOf(searchedEmployee);
         this.employees.splice(index, 1);
-        this.deparments[searchedEmployee.department] += searchedEmployee.salary; // problem
+        this.deparments[searchedEmployee.department] += searchedEmployee.salary;
         return `It was pleasure for ${this.name} to work with Mr./Mrs. ${employeeName}.`;
     }
 
     status() {
         let result = '';
-        result += `${this.name.toUpperCase()} DEPARTMENTS:\n`;
+        result += `${this.name.toUpperCase()} DEPARTMENTS:`;
 
         //marketing
         let marketingEmployeesNames = [];
         this.employees.filter(x => x.department === 'marketing')
             .sort((a, b) => b.salary - a.salary)
             .forEach((employee) => marketingEmployeesNames.push(employee.employeeName));
-        result += `Marketing | Employees: ${marketingEmployeesNames.length}: ${marketingEmployeesNames.join(', ')} |  Remaining Budget: ${this.departmentsBudget['marketing']}`;
+        result += `\nMarketing | Employees: ${marketingEmployeesNames.length}: ${marketingEmployeesNames.join(', ')} |  Remaining Budget: ${this.departmentsBudget['marketing']}`;
 
         //finance
         let finaceEmployeesNames = [];
@@ -90,11 +90,11 @@ class Organization {
     }
 }
 
-let organization = new Organization('SoftUni', 20000);
-
-organization.add('Peter', 'marketing', 1000);
-organization.add('Gosho', 'marketing', 900);
-organization.add('Atanas', 'marketing', 1100);
-organization.add('Robert', 'production', 2000);
-
+let organization = new Organization('SoftUni', 100110);
+console.log(organization.add('Peter', 'marketing', 4001));
+console.log(organization.add('Gosho', 'production', 4001));
+console.log(organization.add('Stoqn', 'finance', 400));
 console.log(organization.status());
+
+
+
