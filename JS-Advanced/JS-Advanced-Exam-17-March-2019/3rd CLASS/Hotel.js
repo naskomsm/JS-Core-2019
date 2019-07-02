@@ -100,7 +100,7 @@ class Hotel {
             return `We hope you enjoyed your time here, Mr./Mrs. ${searchedBooking.clientName}. The total amount of money you have to pay is ${totalMoney + totalServiceMoney} BGN. You have used additional room services, costing ${totalServiceMoney} BGN.`;
         }
         
-        return`We hope you enjoyed your time here, Mr./Mrs. ${searchedBooking.clientName}. The total amount of money you have to pay is ${totalMoney} BGN.`;
+        return `We hope you enjoyed your time here, Mr./Mrs. ${searchedBooking.clientName}. The total amount of money you have to pay is ${totalMoney} BGN.`;
     }
 
     report() { // here was the problem...
@@ -128,17 +128,3 @@ class Hotel {
         return report.join('\n');
     }
 }
-
-let hotel = new Hotel('HotUni', 10);
-
-hotel.rentARoom('Peter', 'single', 4);
-hotel.rentARoom('Robert', 'double', 4);
-hotel.rentARoom('Geroge', 'maisonette', 6);
-
-hotel.roomService(3, 'housekeeping');
-hotel.roomService(3, 'drink');
-hotel.roomService(2, 'room');
-
-console.log(hotel.report());
-
-
