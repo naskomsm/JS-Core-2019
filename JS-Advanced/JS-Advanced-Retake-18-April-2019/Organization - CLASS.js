@@ -1,5 +1,4 @@
 class Organization {
-
     constructor(name, budget) {
         this.name = name;
         this.budget = budget;
@@ -89,12 +88,3 @@ class Organization {
         return result;
     }
 }
-
-let organization = new Organization('SoftUni', 100110);
-console.log(organization.add('Peter', 'marketing', 4001));
-console.log(organization.add('Gosho', 'production', 4001));
-console.log(organization.add('Stoqn', 'finance', 400));
-console.log(organization.status());
-
-
-
