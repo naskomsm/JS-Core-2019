@@ -4,13 +4,24 @@ function addProduct() {
 
     if (text.value !== '' && number.value !== '') {
         let tableBody = document.getElementById('product-list');
+        
+        updateTotalPrice();
 
-        // Total - 0.00
+        let product = makeProduct();
+        tableBody.appendChild(product);
+
+        text.value = '';
+        number.value = '';
+    }
+
+    function updateTotalPrice(){
         let tableTotalInfo = document.getElementsByTagName('tfoot')[0].children[0];
         let currentPrice = +tableTotalInfo.children[1].innerHTML;
         let newPrice = currentPrice + +number.value;
         tableTotalInfo.children[1].innerHTML = newPrice;
+    }
 
+    function makeProduct(){
         let newRow = document.createElement('tr');
         let textTd = document.createElement('td');
         let numberTd = document.createElement('td');
@@ -21,9 +32,6 @@ function addProduct() {
         newRow.appendChild(textTd);
         newRow.appendChild(numberTd)
 
-        tableBody.appendChild(newRow);
-
-        text.value = '';
-        number.value = '';
+        return newRow;
     }
 }
