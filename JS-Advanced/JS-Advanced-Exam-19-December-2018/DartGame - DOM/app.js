@@ -1,23 +1,18 @@
 function dart() {
-	let scoreboard = {};
+	let layersPointsArray = [];
+	let turns = document.getElementById('turns');
+	let playerInTurn = turns.children[0];
 
 	deployScoreboard();
 
-	// let divs = [...document.querySelectorAll('#playBoard div')];
-	// divs.forEach((div) => {
-	// 	div.addEventListener('click', givePointsOnClick);
-	// });
-
-	document.getElementById('firstLayer').addEventListener('click',givePointsOnClick);
-	document.getElementById('secondLayer').addEventListener('click',givePointsOnClick);
-	document.getElementById('thirdLayer').addEventListener('click',givePointsOnClick);
-	document.getElementById('fourthLayer').addEventListener('click',givePointsOnClick);
-	document.getElementById('fifthLayer').addEventListener('click',givePointsOnClick);
-	document.getElementById('sixthLayer').addEventListener('click',givePointsOnClick);
+	[...document.querySelectorAll('#playBoard div')]
+		.forEach((layer, index) => {
+			let pointPerLayer = layersPointsArray[index];
+			layer.addEventListener('click', handleScore(pointPerLayer))
+		});
 
 	function deployScoreboard() {
 		let trs = [...document.querySelectorAll('tbody tr')];
-		let layersPointsArray = [];
 
 		for (const tr of trs) {
 			let layerPoints = +tr.children[1].innerHTML.split(' ')[0];
@@ -30,29 +25,46 @@ function dart() {
 			let layerName = trs[i].children[0].innerHTML;
 
 			trs[i].children[1].innerHTML = layersPointsArray[i]; // layersPoints
-			scoreboard[layerName] = layersPointsArray[i];
 		}
 	}
 
-	function givePointsOnClick() {
-		let currentLayer = this;
-		
-		if (this.id === 'firstLayer') {
-			console.log('1');
-			// let turns = document.getElementById('turns');
+	function handleScore(score) {
+		return (ev) => {
+			if (playerInTurn === turns.children[0]) { // home
+				let homePoints = Number(document.getElementById('Home').children[0].innerHTML);
+				homePoints += score;
+				document.getElementById('Home').children[0].innerHTML = homePoints;
 
-			// let home = turns.children[0];
-			// let away = turns.children[1];
+				playerInTurn = turns.children[1];
 
-			// if(home.style.textDecoration === 'underline'){
+				turns.children[0].style.textDecoration = 'none';
+				turns.children[0].style.fontWeight = 'normal';
+
+				turns.children[1].style.textDecoration = 'underline';
+				turns.children[1].style.fontWeight = 'bold';
+			}
+
+			else if (playerInTurn === turns.children[1]) {
+				let awayPoints = Number(document.getElementById('Away').children[0].innerHTML);
+				awayPoints += score;
+				document.getElementById('Away').children[0].innerHTML = awayPoints;
+
+				playerInTurn = document.getElementById('turns').children[0];
+
+				turns.children[1].style.textDecoration = 'none';
+				turns.children[1].style.fontWeight = 'normal';
+
+				turns.children[0].style.textDecoration = 'underline';
+				turns.children[0].style.fontWeight = 'bold';
+			}
+
+			if (Number(document.getElementById('Home').children[0].innerHTML) >= 100) { // home is winner
 				
-			// }
-			// else{
-				
-			// }
-		}
-		else if(this.id === 'secondLayer'){
-			console.log('2');
+			}
+			else if (Number(document.getElementById('Away').children[0].innerHTML) >= 100) { // away is winner
+
+			}
+			ev.stopPropagation();
 		}
 	}
 }
