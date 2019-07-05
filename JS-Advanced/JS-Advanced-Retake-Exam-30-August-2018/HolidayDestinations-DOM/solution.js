@@ -8,7 +8,7 @@ function addDestination(){
     }
     
     function createRowAndAppendToTable(){
-        let table = document.getElementById('destinations');
+        let table = document.getElementById('destinationsList');
         let tr = document.createElement('tr');
         
         let td1 = document.createElement('td');
@@ -23,35 +23,35 @@ function addDestination(){
 
         updateDestinations();
         clearFields();
-
-        function clearFields(){
-            document.getElementsByClassName('inputData')[0].value = '';
-            document.getElementsByClassName('inputData')[1].value = '';
-        }
-
-        function updateDestinations(){
-            let summaryBox = document.querySelectorAll('#summaryBox input');
-            [...summaryBox].forEach((currentSeason) => {
-                if(currentSeason.id === season.toLowerCase()){
-                    let value = +currentSeason.getAttribute('value');
-                    value++;
-                    currentSeason.setAttribute('value',value);
-                }
-            });
-
-        }
     }
 
     function getSeasonInput(){
         let seasonsMenu = document.getElementById('seasons').children;
         let season = '';
 
-        [...seasonsMenu].forEach((currentSeason) => {
+        Array.from(seasonsMenu).forEach((currentSeason) => {
             if(currentSeason.selected){
                 season = currentSeason.innerHTML;
             }
         });
 
         return season;
+    }
+
+    function clearFields(){
+        document.getElementsByClassName('inputData')[0].value = '';
+        document.getElementsByClassName('inputData')[1].value = '';
+    }
+
+    function updateDestinations(){
+        let summaryBox = document.querySelectorAll('#summaryBox input');
+        Array.from(summaryBox).forEach((currentSeason) => {
+            if(currentSeason.id === season.toLowerCase()){
+                let value = +currentSeason.getAttribute('value');
+                value++;
+                currentSeason.setAttribute('value',value);
+            }
+        });
+
     }
 }
