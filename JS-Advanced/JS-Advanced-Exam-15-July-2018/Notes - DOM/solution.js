@@ -1,13 +1,16 @@
 function addSticker() {
+    const inputTitle = document.getElementsByTagName('input')[0];
+    const title = inputTitle.value;
+
+    const inputContent = document.getElementsByTagName('input')[1];
+    const content = inputContent.value;
+
     let sticker = createSticker();
     let stickerList = document.getElementById('sticker-list');
     stickerList.appendChild(sticker);
 
     function createSticker() {
-        let title = document.getElementsByClassName('title')[0].value;
-        let content = document.getElementsByClassName('content')[0].value;
-
-        if (title !== '' && content !== '') {
+        if (title && content) {
             let li = document.createElement('li');
             li.classList.add('note-content');
 
@@ -29,9 +32,10 @@ function addSticker() {
             li.appendChild(hr);
             li.appendChild(p);
 
-            document.getElementsByClassName('title')[0].value = '';
-            document.getElementsByClassName('content')[0].value = '';
             return li;
         }
     }
+
+    document.getElementsByClassName('title')[0].value = '';
+    document.getElementsByClassName('content')[0].value = '';
 }
