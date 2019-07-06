@@ -29,7 +29,7 @@ class Kitchen {
 
     addToMenu(mealName, products, price) {
         if (this.menu.hasOwnProperty(mealName)) {
-            return `The ${mealName} is already in the our menu, try something different.`;
+            return `The ${mealName} is already in our menu, try something different.`;
         }
 
         this.menu[mealName] = {
@@ -58,22 +58,18 @@ class Kitchen {
             return `There is not ${mealName} yet in our menu, do you want to order something else?`;
         }
 
-        let neededProducts = this.menu[mealName].products;
-        for (const neededProduct of neededProducts) {
-            let [name, quantity] = neededProduct.split(' ');
+        for (const productToCheck in this.menu[mealName].products) {
+            let [productToCheckName,productToCheckQuantity] = this.menu[mealName].products[productToCheck].split(' ');
 
-            if (!this.productsInStock.hasOwnProperty(name) || this.productsInStock[name] < +quantity) {
+            if (this.productsInStock.hasOwnProperty(productToCheckName) && this.productsInStock[productToCheckName] >= +productToCheckQuantity) {
+                this.productsInStock[productToCheckName] -= +productToCheckQuantity;
+            }
+            else {
                 return `For the time being, we cannot complete your order (${mealName}), we are very sorry...`;
             }
 
-            if (this.productsInStock[name] >= +quantity) {
-                this.productsInStock[name] -= +quantity;
-                this.budget += this.menu[mealName].price;
-
-                return `Your order (${mealName}) will be completed in the next 30 minutes and will cost you ${this.menu[mealName].price}.`;
-            }
-
-            return `For the time being, we cannot complete your order (${mealName}), we are very sorry...`;
         }
+        this.budget += this.menu[mealName].price;
+        return `Your order (${mealName}) will be completed in the next 30 minutes and will cost you ${this.menu[mealName].price}.`;
     }
 }

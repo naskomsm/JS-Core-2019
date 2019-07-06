@@ -1,45 +1,39 @@
 function solution() {
 	let toyTypeInput = document.getElementById('toyType');
+	let toyType = toyTypeInput.value;
+
 	let toyPriceInput = document.getElementById('toyPrice');
+	let toyPrice = toyPriceInput.value;
+
 	let toyDescriptionInput = document.getElementById('toyDescription');
+	let toyDescription = toyDescriptionInput.value;
 
-	let addButton = document.getElementsByTagName('button')[0];
-	addButton.addEventListener('click', addGift);
+	if (toyType && !isNaN(toyPrice) && toyDescription.length > 0 && toyDescription.length <= 50) {
+		let div = document.createElement('div');
+		div.className = 'gift';
 
-	function addGift() {
-		if (toyTypeInput.value !== '' && typeof +toyPriceInput.value === 'number' && toyDescriptionInput.value !== '') {
-			let gift = createGift();
-			let section = document.getElementById('christmasGiftShop');
-			section.appendChild(gift);
+		let img = document.createElement('img');
+		img.src = 'gift.png';
 
-			function createGift() {
-				let div = document.createElement('div');
-				div.classList.add('gift');
+		let h2 = document.createElement('h2');
+		h2.textContent = toyType;
 
-				let img = document.createElement('img');
-				img.src = 'gift.png';
+		let p = document.createElement('p');
+		p.textContent = toyDescription
 
-				let h2 = document.createElement('h2');
-				h2.innerHTML = toyTypeInput.value;
+		let buyButton = document.createElement('button');
+		buyButton.textContent = `Buy it for $${toyPriceInput.value}`
+		buyButton.addEventListener('click', () => div.remove());
 
-				let p = document.createElement('p');
-				p.innerHTML = toyDescriptionInput.value;
+		div.appendChild(img);
+		div.appendChild(h2);
+		div.appendChild(p);
+		div.appendChild(buyButton);
 
-				let buyButton = document.createElement('button');
-				buyButton.innerHTML = `Buy it for $${toyPriceInput.value}`
-				buyButton.addEventListener('click', () => div.remove());
-
-				div.appendChild(img);
-				div.appendChild(h2);
-				div.appendChild(p);
-				div.appendChild(buyButton);
-
-				return div
-			}
-
-			toyTypeInput.value = '';
-			toyPriceInput.value = '';
-			toyDescriptionInput.value = '';
-		}
+		document.getElementById('christmasGiftShop').appendChild(div);
 	}
+
+	toyTypeInput.value = '';
+	toyPriceInput.value = '';
+	toyDescriptionInput.value = '';
 }
