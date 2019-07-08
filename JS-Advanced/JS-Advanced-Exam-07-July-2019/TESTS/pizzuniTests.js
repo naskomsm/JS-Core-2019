@@ -41,8 +41,8 @@ describe('registerUser', function () {
             orderHistory: []
         };
 
-        assert.deepEqual(dummy,current.registerUser(undefined))
-        assert.deepEqual(dummy2,current.registerUser(1))
+        assert.deepEqual(dummy, current.registerUser(undefined))
+        assert.deepEqual(dummy2, current.registerUser(1))
     });
 
     it('Should add user with email', function () {
@@ -119,11 +119,11 @@ describe('makeOrder', function () {
         assert.deepEqual(1, user.orderHistory.length);
     });
 
-    it('Working',function(){
+    it('Working', function () {
         let current = new PizzUni();
         current.registerUser('naskobg123@abv.bg');
 
-        assert.equal(0,current.makeAnOrder('naskobg123@abv.bg', 'Classic Margherita'))
+        assert.equal(0, current.makeAnOrder('naskobg123@abv.bg', 'Classic Margherita'))
     })
 });
 
