@@ -43,7 +43,6 @@ class Computer {
             throw new Error(`The ${name} is not recognized`);
         }
 
-
         let isOpen = this.taskManager.find(x => x.name === name);
         if (isOpen) {
             throw new Error(`The ${name} is already open`);
@@ -88,20 +87,3 @@ class Computer {
         return result.join('\n');
     }
 }
-
-let computer = new Computer(4096, 7.5, 250000);
-
-computer.installAProgram('Word', 7300);
-computer.installAProgram('Excel', 10240);
-computer.installAProgram('PowerPoint', 12288);
-computer.uninstallAProgram('Word');
-computer.installAProgram('Solitare', 1500);
-
-computer.openAProgram('Excel');
-computer.openAProgram('Excel');
-
-console.log(computer.installedPrograms);
-console.log(('-').repeat(50)) // Separator
-console.log(computer.taskManager);
-
-
