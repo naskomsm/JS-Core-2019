@@ -48,4 +48,5 @@ class SubscriptionCard {
         this._blocked = false;
     }
 }
+
 module.exports = SubscriptionCard;
