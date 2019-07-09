@@ -10,6 +10,16 @@ describe('constructor and getters',function(){
         assert.equal(current.isBlocked,false);
         assert.deepEqual(current._subscriptions,[]);
     });
+
+    it('should not be able to change firstName and lastName and SSN',function(){
+        let current = new SubscriptionCard('Atanas','Kolev','00000000');
+        current.firstName = 'Stoqn';
+        current.lastName = 'Shopov';
+        current.SSN = '123456';
+        assert.equal(current.firstName,'Atanas');
+        assert.equal(current.lastName,'Kolev');
+        assert.equal(current.SSN,'00000000');
+    });
 }); 
 
 describe('addSubscription',function(){
