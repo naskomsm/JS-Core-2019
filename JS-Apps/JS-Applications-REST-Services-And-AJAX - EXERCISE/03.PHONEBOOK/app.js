@@ -47,9 +47,12 @@ function attachEvents() {
 
     //todo createContact - FETCH FOR POST
     function createContact() {
+        let person = document.getElementById('person').value;
+        let phone = document.getElementById('phone').value; 
+
         let myObj = {
-            "person": "Atanas",
-            "phone": "120381"
+            "person": person,
+            "phone": phone
         }
 
         fetch('https://phonebook-nakov.firebaseio.com/phonebook.json', {
