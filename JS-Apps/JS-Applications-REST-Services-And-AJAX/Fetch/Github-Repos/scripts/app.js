@@ -1,6 +1,7 @@
 function loadRepos() {
 	const repos = document.getElementById("repos");
 	repos.innerHTML = '';
+	
 	const username = document.getElementById("username").value;
 	const url = `https://api.github.com/users/${username}/repos`;
 
