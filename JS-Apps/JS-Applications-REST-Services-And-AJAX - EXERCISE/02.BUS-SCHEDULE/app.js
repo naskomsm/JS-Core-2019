@@ -25,7 +25,7 @@ function solve() {
                 if (response.ok) {
                     return response.json();
                 }
-                else{
+                else {
                     displayError();
                 }
             })
@@ -42,7 +42,6 @@ function solve() {
     function displayError() {
         const stopInfo = document.getElementsByClassName('info')[0];
         stopInfo.textContent = `Error`;
-        disableButtons();
     }
 
     return {
