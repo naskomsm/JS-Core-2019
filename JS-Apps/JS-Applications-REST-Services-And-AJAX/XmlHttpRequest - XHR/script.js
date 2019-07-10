@@ -6,8 +6,9 @@ function loadRepos() {
     req.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             let div = document.createElement('div');
-            div.textContent = 'I WAS CREATED BY THE BUTTON BRO';
+            div.textContent = this.responseText;
             document.getElementsByTagName('body')[0].appendChild(div);
+            return;
         }
     };
 
