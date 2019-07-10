@@ -7,8 +7,8 @@ function solve() {
     };
 
     function depart() {
-        function display(stopId) {
-            const { name, next } = stopId;
+        function display(busStop) {
+            const { name, next } = busStop;
             
             currentStop.name = name;
             currentStop.next = next;
