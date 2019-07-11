@@ -21,10 +21,11 @@ function attachEvents() {
         function appendToDom(person, phone, key) {
             let li = document.createElement('li');
             li.textContent = `${person}: ${phone}`;
+
             let deleteButton = document.createElement('button');
             deleteButton.textContent = 'DELETE';
-
             deleteButton.addEventListener('click', deleteContact);
+
             //todo removeContact - FETCH FOR DELETE
             let deleteUrl = `https://phonebook-nakov.firebaseio.com/phonebook/${key}.json`
             function deleteContact() {
@@ -34,7 +35,6 @@ function attachEvents() {
             }
 
             li.appendChild(deleteButton);
-
             phonebook.appendChild(li);
         }
 
@@ -58,7 +58,8 @@ function attachEvents() {
         fetch('https://phonebook-nakov.firebaseio.com/phonebook.json', {
             method: 'post',
             body: JSON.stringify(myObj),
-        }).then(response => response.json());
+        })
+        // .then(response => response.json());
     }
 }
 
