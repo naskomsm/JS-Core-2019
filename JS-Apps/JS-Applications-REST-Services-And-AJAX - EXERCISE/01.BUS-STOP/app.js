@@ -12,14 +12,16 @@ function getInfo() {
     }
 
     function display(givenBusStopId) {
-        const { name, buses } = givenBusStopId;
-        document.getElementById('stopName').textContent = name;
+        if (givenBusStopId !== undefined) {
+            const { name, buses } = givenBusStopId;
+            document.getElementById('stopName').textContent = name;
 
-        for (const busId in buses) {
-            let busTime = buses[busId];
-            let result = create(busId, busTime);
+            for (const busId in buses) {
+                let busTime = buses[busId];
+                let result = create(busId, busTime);
 
-            busesList.appendChild(result);
+                busesList.appendChild(result);
+            }
         }
     }
 
@@ -32,6 +34,7 @@ function getInfo() {
             else {
                 const stopName = document.getElementById('stopName');
                 stopName.textContent = 'Error';
+                return;
             }
         })
         .then((data) => display(data))
