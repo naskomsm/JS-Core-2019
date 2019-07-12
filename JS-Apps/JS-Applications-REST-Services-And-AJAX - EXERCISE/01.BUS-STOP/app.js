@@ -23,11 +23,6 @@ function getInfo() {
         }
     }
 
-    function displayError() {
-        const stopName = document.getElementById('stopName');
-        stopName.textContent = 'Error';
-    }
-
     let url = `https://judgetests.firebaseio.com/businfo/${stopId}.json`;
     fetch(url)
         .then((response) => {
