@@ -36,6 +36,7 @@ function getInfo() {
         })
         .then((data) => display(data))
 
+    document.getElementById('stopId').value = '';
     // Fetch promises only reject with a TypeError when a network error occurs.
     // Since 4xx and 5xx responses aren't network errors, there's nothing to catch.
 }
