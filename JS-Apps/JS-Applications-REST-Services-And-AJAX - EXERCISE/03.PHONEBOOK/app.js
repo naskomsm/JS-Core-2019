@@ -7,10 +7,10 @@ function attachEvents() {
     createButton.addEventListener('click', createContact);
 
     let phonebook = document.getElementById('phonebook');
-
-
+    
     function loadContacts() {
         function display(contacts) {
+            phonebook.innerHTML = '';
             for (const contact in contacts) {
                 const { person, phone } = contacts[contact];
                 const key = contact;
