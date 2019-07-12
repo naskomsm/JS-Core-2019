@@ -3,7 +3,7 @@ function solve() {
 
     let currentStop = {
         name: 'depot',
-        next: 'depot'
+        id: 'depot'
     };
 
     function depart() {
@@ -11,7 +11,7 @@ function solve() {
             const { name, next } = busStop;
 
             currentStop.name = name;
-            currentStop.next = next;
+            currentStop.id = next;
 
             info.textContent = `Next stop ${currentStop.name}`;
 
@@ -19,7 +19,7 @@ function solve() {
             document.getElementById('arrive').disabled = false;
         }
 
-        let url = `https://judgetests.firebaseio.com/schedule/${currentStop.next}.json `;
+        let url = `https://judgetests.firebaseio.com/schedule/${currentStop.id}.json `;
         fetch(url)
             .then((response) => {
                 if (response.ok) {
