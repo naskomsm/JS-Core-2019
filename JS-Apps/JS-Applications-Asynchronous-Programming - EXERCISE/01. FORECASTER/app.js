@@ -10,9 +10,15 @@ function attachEvents() {
             .then(response => response.json())
             .then(data => display(data));
 
+        clear();
         function display(data) {
             let searchedObject = getObject(data);
-            document.getElementById('forecast').style.display = 'block'
+            document.getElementById('location').value = '';
+
+            if (searchedObject === undefined) {
+                alert('Error - 404 Not Found');
+                return;
+            }
 
             let currentConditionsURL = `https://judgetests.firebaseio.com/forecast/today/${searchedObject.code}.json`;
             fetch(currentConditionsURL)
@@ -20,6 +26,7 @@ function attachEvents() {
                 .then(data => displayCurrentCondition(data));
 
             function displayCurrentCondition(data) {
+                document.getElementById('forecast').style.display = 'block'
                 let currentConditionDiv = document.getElementById('current');
 
                 let forecastsDiv = document.createElement('div');
@@ -81,14 +88,65 @@ function attachEvents() {
 
             function displayNextThreeDays(data) {
                 let upcomingDiv = document.getElementById('upcoming');
-
                 let forecastsDiv = document.createElement('div');
                 forecastsDiv.classList.add('forecast-info');
 
+                let conditions = data.forecast;
+                for (const condition of conditions) {
+                    let upcomingSpan = document.createElement('span');
+                    upcomingSpan.classList.add('upcoming');
+                    let conditionSymbol = '';
+                    let degreesSymbol = '°';
+                    switch (condition.condition) {
+                        case 'Sunny':
+                            conditionSymbol = `☀`;
+                            break;
+                        case 'Partly sunny':
+                            conditionSymbol = `⛅`;
+                            break;
+                        case 'Overcast':
+                            conditionSymbol = `☁`;
+                            break;
+                        case 'Rain':
+                            conditionSymbol = `☂`;
+                            break;
+                        default:
+                            break;
+                    }
 
+                    let symbolSpan = document.createElement('span');
+                    symbolSpan.classList.add('symbol');
+                    symbolSpan.textContent = conditionSymbol;
+                    upcomingSpan.appendChild(symbolSpan);
+
+                    let degreesSpan = document.createElement('span');
+                    degreesSpan.classList.add('forecast-data');
+                    degreesSpan.textContent = `${condition.low}${degreesSymbol}/${condition.high}${degreesSymbol}`;
+                    upcomingSpan.appendChild(degreesSpan);
+
+                    let typeDiv = document.createElement('span');
+                    typeDiv.classList.add('forecast-data');
+                    typeDiv.textContent = `${condition.condition}`;
+                    upcomingSpan.appendChild(typeDiv);
+
+                    forecastsDiv.appendChild(upcomingSpan);
+                    upcomingDiv.appendChild(forecastsDiv);
+                }
             }
         }
 
+        function clear() {
+            let current = document.getElementById('current');
+            let upcoming = document.getElementById('upcoming');
+            
+            while (current.children.length > 1) {
+                current.removeChild(current.children[1]);
+            }
+
+            while (upcoming.children.length > 1) {
+                upcoming.removeChild(upcoming.children[1]);
+            }
+        }
 
         function getObject(data) {
             for (const object in data) {
