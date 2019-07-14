@@ -28,8 +28,6 @@ function attachEvents() {
         }
     }
 
-    //
-
     let loadButton = document.getElementsByClassName('load')[0];
     loadButton.addEventListener('click', loadCatches);
 
