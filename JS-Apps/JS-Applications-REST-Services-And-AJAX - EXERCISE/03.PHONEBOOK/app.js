@@ -7,7 +7,7 @@ function attachEvents() {
     createButton.addEventListener('click', createContact);
 
     let phonebook = document.getElementById('phonebook');
-    
+
     function loadContacts() {
         function display(contacts) {
             phonebook.innerHTML = '';
@@ -31,7 +31,7 @@ function attachEvents() {
             function deleteContact() {
                 fetch(deleteUrl, {
                     method: 'DELETE'
-                });
+                }).then(() => loadContacts());
             }
 
             li.appendChild(deleteButton);
@@ -48,7 +48,7 @@ function attachEvents() {
     //todo createContact - FETCH FOR POST
     function createContact() {
         let person = document.getElementById('person').value;
-        let phone = document.getElementById('phone').value; 
+        let phone = document.getElementById('phone').value;
 
         let myObj = {
             "person": person,
@@ -58,8 +58,7 @@ function attachEvents() {
         fetch('https://phonebook-nakov.firebaseio.com/phonebook.json', {
             method: 'post',
             body: JSON.stringify(myObj),
-        })
-        // .then(response => response.json());
+        }).then(() => loadContacts());
     }
 }
 
