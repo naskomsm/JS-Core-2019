@@ -58,7 +58,13 @@ function attachEvents() {
         fetch('https://phonebook-nakov.firebaseio.com/phonebook.json', {
             method: 'post',
             body: JSON.stringify(myObj),
-        }).then(() => loadContacts());
+        }).then(() => loadContacts())
+          .then(() => clearFields());
+    }
+
+    function clearFields(){
+        document.getElementById('person').value = '';
+        document.getElementById('phone').value = '';
     }
 }
 
