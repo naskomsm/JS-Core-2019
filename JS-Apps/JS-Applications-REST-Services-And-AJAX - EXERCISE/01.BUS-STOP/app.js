@@ -23,6 +23,8 @@ function getInfo() {
 
             elements.busesList.appendChild(li);
         }
+
+        clearField();
     }
 
     function createLi(busId, busTime) {
@@ -33,12 +35,12 @@ function getInfo() {
     }
 
     function clearField() {
-        
+        elements.stopId.value = '';
     }
 
     function handler(response) {
         if (response.status > 400) {
-            throw new Error(`Error: ${response.statusText}`);
+            elements.stopName.textContent = `Error: ${response.statusText}`;
         }
 
         return response.json();
