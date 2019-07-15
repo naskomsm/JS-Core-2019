@@ -1,45 +1,48 @@
 function getInfo() {
-    const busesList = document.getElementById("buses");
-    busesList.innerHTML = '';
+    const elements = {
+        button: document.getElementById('submit'),
+        busesList: document.getElementById("buses"),
+        stopName: document.getElementById('stopName'),
+        stopId: document.getElementById('stopId')
+    };
 
-    let stopId = document.getElementById('stopId').value;
+    loadStopInfo();
+    function loadStopInfo() {
+        fetch(`https://judgetests.firebaseio.com/businfo/${elements.stopId.value}.json`)
+            .then(handler)
+            .then(showStopInfo);
+    }
 
-    function create(busId, busTime) {
+    function showStopInfo(data) {
+        const { buses, name } = data;
+        for (const busId in buses) {
+            elements.stopName.textContent = name;
+
+            let busTime = buses[busId];
+            let li = createLi(busId, busTime);
+
+            elements.busesList.appendChild(li);
+        }
+    }
+
+    function createLi(busId, busTime) {
         let li = document.createElement('li');
         li.textContent = `Bus ${busId} arrives in ${busTime} minutes`;
 
         return li;
     }
 
-    function display(givenBusStopId) {
-        if (givenBusStopId !== undefined) {
-            const { name, buses } = givenBusStopId;
-            document.getElementById('stopName').textContent = name;
-
-            for (const busId in buses) {
-                let busTime = buses[busId];
-                let result = create(busId, busTime);
-
-                busesList.appendChild(result);
-            }
-        }
+    function clearField() {
+        
     }
 
-    let url = `https://judgetests.firebaseio.com/businfo/${stopId}.json`;
-    fetch(url)
-        .then((response) => {
-            if (response.ok) {
-                return response.json();
-            }
-            else {
-                const stopName = document.getElementById('stopName');
-                stopName.textContent = 'Error';
-                return;
-            }
-        })
-        .then((data) => display(data))
+    function handler(response) {
+        if (response.status > 400) {
+            throw new Error(`Error: ${response.statusText}`);
+        }
 
-    document.getElementById('stopId').value = '';
-    // Fetch promises only reject with a TypeError when a network error occurs.
-    // Since 4xx and 5xx responses aren't network errors, there's nothing to catch.
+        return response.json();
+        // Fetch promises only reject with a TypeError when a network error occurs.
+        // Since 4xx and 5xx responses aren't network errors, there's nothing to catch.
+    }
 }

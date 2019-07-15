@@ -1,161 +1,115 @@
 function attachEvents() {
-    let getWeatherButton = document.getElementById('submit');
-    getWeatherButton.addEventListener('click', displayWeatherReport);
+    const elements = {
+        inputField: document.getElementById('location'),
+        button: document.getElementById('submit'),
+        current: document.getElementById('current'),
+        upcoming: document.getElementById('upcoming'),
+        forecast: document.getElementById('forecast')
+    };
 
-    let location = document.getElementById('location');
+    const symbols = {
+        sunny: '☀',
+        partlySunny: '⛅',
+        overcast: '☁',
+        rain: '☂',
+        degrees: '°'
+    };
 
-    function displayWeatherReport() {
-        let locationsURL = `https://judgetests.firebaseio.com/locations.json`;
-        fetch(locationsURL)
-            .then(response => response.json())
-            .then(data => display(data));
+    elements.button.addEventListener('click', loadWeatherInfo);
 
-        clear();
-        function display(data) {
-            let searchedObject = getObject(data);
-            document.getElementById('location').value = '';
+    function loadWeatherInfo() {
+        fetch('https://judgetests.firebaseio.com/locations.json')
+            .then(handler)
+            .then(loadLocationWeatherInfo);
+    };
 
-            if (searchedObject === undefined) {
-                alert('Error - 404 Not Found');
-                return;
-            }
+    function loadLocationWeatherInfo(data) {
+        let location = data.filter((o) => o.name === elements.inputField.value)[0];
 
-            let currentConditionsURL = `https://judgetests.firebaseio.com/forecast/today/${searchedObject.code}.json`;
-            fetch(currentConditionsURL)
-                .then(response => response.json())
-                .then(data => displayCurrentCondition(data));
+        fetch(`https://judgetests.firebaseio.com/forecast/today/${location.code}.json`)
+            .then(handler)
+            .then(data => showLocationWeatherInfo(data, location.code))
+    };
 
-            function displayCurrentCondition(data) {
-                document.getElementById('forecast').style.display = 'block'
-                let currentConditionDiv = document.getElementById('current');
+    function showLocationWeatherInfo(data, code) {
+        elements.forecast.style.display = 'block';
+        let divForecast = createHTMLelement('div', 'forecasts');
 
-                let forecastsDiv = document.createElement('div');
-                forecastsDiv.classList.add('forecasts');
+        let symbol = symbols[data.forecast.condition.toLowerCase()];
+        let spanSymbol = createHTMLelement('span', ['condition', 'symbol'], symbol);
 
-                let conditionalSymbolSpan = document.createElement('span');
-                conditionalSymbolSpan.setAttribute('class', 'condition symbol');
-                let condition = data.forecast.condition;
+        let spanHolder = createHTMLelement('span', 'condition');
 
-                let conditionSymbol = '';
-                let degreesSymbol = '°';
-                switch (condition) {
-                    case 'Sunny':
-                        conditionSymbol = `☀`;
-                        break;
-                    case 'Partly sunny':
-                        conditionSymbol = `⛅`;
-                        break;
-                    case 'Overcast':
-                        conditionSymbol = `☁`;
-                        break;
-                    case 'Rain':
-                        conditionSymbol = `☂`;
-                        break;
-                    default:
-                        break;
-                }
+        let degrees = `${data.forecast.low}${symbols.degrees}/${data.forecast.high}${symbols.degrees}`;
+        let spanName = createHTMLelement('span', 'forecast-data', data.name);
+        let spanDegrees = createHTMLelement('span', 'forecast-data', degrees);
+        let spanCondition = createHTMLelement('span', 'forecast-data', data.forecast.condition);
 
-                conditionalSymbolSpan.textContent = conditionSymbol;
-                forecastsDiv.appendChild(conditionalSymbolSpan);
+        spanHolder = appendChildrenToParent([spanName, spanDegrees, spanCondition], spanHolder);
+        divForecast = appendChildrenToParent([spanSymbol, spanHolder], divForecast);
 
-                let conditionSpan = document.createElement('span');
-                conditionSpan.classList.add('condition');
+        elements.current.appendChild(divForecast);
 
-                let locationSpan = document.createElement('span');
-                locationSpan.classList.add('forecast-data');
-                locationSpan.textContent = data.name;
-                conditionSpan.appendChild(locationSpan);
+        loadUpcomingLocationWeatherInfo(code);
+    };
 
-                let degreesSpan = document.createElement('span');
-                degreesSpan.classList.add('forecast-data');
-                degreesSpan.textContent = `${data.forecast.low}${degreesSymbol}/${data.forecast.high}${degreesSymbol}`;
-                conditionSpan.appendChild(degreesSpan);
-
-                let typeDiv = document.createElement('span');
-                typeDiv.classList.add('forecast-data');
-                typeDiv.textContent = `${data.forecast.condition}`;
-                conditionSpan.appendChild(typeDiv);
-
-                forecastsDiv.appendChild(conditionSpan);
-
-                currentConditionDiv.appendChild(forecastsDiv);
-            }
-
-            let nextThreeDaysURL = `https://judgetests.firebaseio.com/forecast/upcoming/${searchedObject.code}.json`;
-            fetch(nextThreeDaysURL)
-                .then(response => response.json())
-                .then(data => displayNextThreeDays(data));
-
-            function displayNextThreeDays(data) {
-                let upcomingDiv = document.getElementById('upcoming');
-                let forecastsDiv = document.createElement('div');
-                forecastsDiv.classList.add('forecast-info');
-
-                let conditions = data.forecast;
-                for (const condition of conditions) {
-                    let upcomingSpan = document.createElement('span');
-                    upcomingSpan.classList.add('upcoming');
-                    let conditionSymbol = '';
-                    let degreesSymbol = '°';
-                    switch (condition.condition) {
-                        case 'Sunny':
-                            conditionSymbol = `☀`;
-                            break;
-                        case 'Partly sunny':
-                            conditionSymbol = `⛅`;
-                            break;
-                        case 'Overcast':
-                            conditionSymbol = `☁`;
-                            break;
-                        case 'Rain':
-                            conditionSymbol = `☂`;
-                            break;
-                        default:
-                            break;
-                    }
-
-                    let symbolSpan = document.createElement('span');
-                    symbolSpan.classList.add('symbol');
-                    symbolSpan.textContent = conditionSymbol;
-                    upcomingSpan.appendChild(symbolSpan);
-
-                    let degreesSpan = document.createElement('span');
-                    degreesSpan.classList.add('forecast-data');
-                    degreesSpan.textContent = `${condition.low}${degreesSymbol}/${condition.high}${degreesSymbol}`;
-                    upcomingSpan.appendChild(degreesSpan);
-
-                    let typeDiv = document.createElement('span');
-                    typeDiv.classList.add('forecast-data');
-                    typeDiv.textContent = `${condition.condition}`;
-                    upcomingSpan.appendChild(typeDiv);
-
-                    forecastsDiv.appendChild(upcomingSpan);
-                    upcomingDiv.appendChild(forecastsDiv);
-                }
-            }
-        }
-
-        function clear() {
-            let current = document.getElementById('current');
-            let upcoming = document.getElementById('upcoming');
-            
-            while (current.children.length > 1) {
-                current.removeChild(current.children[1]);
-            }
-
-            while (upcoming.children.length > 1) {
-                upcoming.removeChild(upcoming.children[1]);
-            }
-        }
-
-        function getObject(data) {
-            for (const object in data) {
-                if (location.value === data[object].name) {
-                    return data[object];
-                }
-            }
-        }
+    function loadUpcomingLocationWeatherInfo(code) {
+        fetch(`https://judgetests.firebaseio.com/forecast/upcoming/${code}.json`)
+            .then(handler)
+            .then(showUpcomingLocationWeatherInfo)
     }
+
+    function showUpcomingLocationWeatherInfo(data) {
+        let divForecast = createHTMLelement('div', 'forecast-info');
+
+        data.forecast.forEach((o) => {
+            let spanHolder = createHTMLelement('span', 'upcoming');
+
+            let symbol = symbols[o.condition.toLowerCase()] || symbols['partlySunny'];
+            let degrees = `${o.low}${symbols.degrees}/${o.high}${symbols.degrees}`;
+
+            let spanSymbol = createHTMLelement('span', 'symbol', symbol);
+            let spanDegrees = createHTMLelement('span', 'forecast-data', degrees);
+            let spanCondition = createHTMLelement('span', 'forecast-data', o.condition);
+
+            spanHolder = appendChildrenToParent([spanSymbol, spanDegrees, spanCondition], spanHolder);
+            divForecast.appendChild(spanHolder);
+        });
+
+        elements.upcoming.appendChild(divForecast);
+    }
+
+    function appendChildrenToParent(children, parent) {
+        children.forEach((child) => parent.appendChild(child));
+
+        return parent;
+    }
+
+    function createHTMLelement(tagName, className, textContent) {
+        let currentElement = document.createElement(tagName);
+
+        if (typeof className === 'string') {
+            currentElement.classList.add(className);
+        }
+        else if (typeof className === 'object') {
+            currentElement.classList.add(...className); // [1,2,3,4,5] => class "1 2 3 4 5";
+        }
+
+        if (textContent) {
+            currentElement.textContent = textContent;
+        }
+
+        return currentElement;
+    }
+
+    function handler(response) {
+        if (response.status > 400) {
+            elements.forecast.innerHTML = 'Error';
+            elements.forecast.style.display = 'block';
+        }
+
+        return response.json();
+    };
 }
 
 attachEvents();
