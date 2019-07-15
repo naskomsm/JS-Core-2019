@@ -1,70 +1,56 @@
 function attachEvents() {
-    //buttons    
-    let loadButton = document.getElementById('btnLoad');
-    loadButton.addEventListener('click', loadContacts);
+    const elements = {
+        loadButton: document.getElementById('btnLoad'),
+        createButton: document.getElementById('btnCreate'),
+        phonebook: document.getElementById('phonebook')
+    };
 
-    let createButton = document.getElementById('btnCreate');
-    createButton.addEventListener('click', createContact);
-
-    let phonebook = document.getElementById('phonebook');
+    elements.loadButton.addEventListener('click', loadContacts);
 
     function loadContacts() {
-        function display(contacts) {
-            phonebook.innerHTML = '';
-            for (const contact in contacts) {
-                const { person, phone } = contacts[contact];
-                const key = contact;
-                appendToDom(person, phone, key);
-            }
-        }
-
-        function appendToDom(person, phone, key) {
-            let li = document.createElement('li');
-            li.textContent = `${person}: ${phone}`;
-
-            let deleteButton = document.createElement('button');
-            deleteButton.textContent = 'DELETE';
-            deleteButton.addEventListener('click', deleteContact);
-
-            //todo removeContact - FETCH FOR DELETE
-            let deleteUrl = `https://phonebook-nakov.firebaseio.com/phonebook/${key}.json`
-            function deleteContact() {
-                fetch(deleteUrl, {
-                    method: 'DELETE'
-                }).then(() => loadContacts());
-            }
-
-            li.appendChild(deleteButton);
-            phonebook.appendChild(li);
-        }
-
-        let url = 'https://phonebook-nakov.firebaseio.com/phonebook.json';
-        fetch(url)
-            .then((response) => response.json())
-            .then((data) => display(data))
+        fetch(`https://phonebook-nakov.firebaseio.com/phonebook.json`)
+            .then(handler)
+            .then(showContacts);
     }
 
-
-    //todo createContact - FETCH FOR POST
-    function createContact() {
-        let person = document.getElementById('person').value;
-        let phone = document.getElementById('phone').value;
-
-        let myObj = {
-            "person": person,
-            "phone": phone
+    function showContacts(data) {
+        for (const contact in data) {
+            const id = contact;
+            const { person, phone } = data[contact];
+            
+            const li = createLi(person, phone,id);
+            elements.phonebook.appendChild(li);
         }
+    }
+    
+    function createLi(person, phone,id) {
+        const deleteButton = createDeleteButton();
+        let li = document.createElement('li');
+        li.textContent = `${person}: ${phone}`;
+        li.appendChild(deleteButton);
 
-        fetch('https://phonebook-nakov.firebaseio.com/phonebook.json', {
-            method: 'post',
-            body: JSON.stringify(myObj),
-        }).then(() => loadContacts())
-          .then(() => clearFields());
+        return li;
     }
 
-    function clearFields(){
-        document.getElementById('person').value = '';
-        document.getElementById('phone').value = '';
+    function createDeleteButton() {
+        let button = document.createElement('button');
+        button.textContent = 'DELETE';
+        button.addEventListener('click',deleteContact);
+
+        return button;
+    }
+
+    function deleteContact(id) {
+
+    }
+
+    function handler(response) {
+        if (response.status > 400) {
+            alert(`Error: ${response.statusText}`);
+            return;
+        }
+
+        return response.json();
     }
 }
 
