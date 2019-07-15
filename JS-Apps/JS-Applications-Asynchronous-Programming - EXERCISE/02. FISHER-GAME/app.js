@@ -1,86 +1,133 @@
 function attachEvents() {
     const elements = {
         loadBtn: document.querySelector('button.load'),
-        createBtn: document.querySelector('button.create'),
-        catches: document.getElementById('catches')
+        createBtn: document.querySelector('button.add'),
+        catches: document.getElementById('catches'),
+        anglerInputField: document.querySelector('html body aside fieldset#addForm input.angler'),
+        weightInputField: document.querySelector('html body aside fieldset#addForm input.weight'),
+        speciesInputField: document.querySelector('html body aside fieldset#addForm input.species'),
+        locationInputField: document.querySelector('html body aside fieldset#addForm input.location'),
+        baitInputField: document.querySelector('html body aside fieldset#addForm input.bait'),
+        captureTimeInputField: document.querySelector('html body aside fieldset#addForm input.captureTime'),
     };
 
-    elements.loadBtn.addEventListener('click', loadAllCatches);
+    elements.loadBtn.addEventListener('click', loadCatches);
+    elements.createBtn.addEventListener('click', createCatch);
 
-    function loadAllCatches() {
-        fetch(`https://fisher-game.firebaseio.com/catches.json`, { method: 'GET' })
+    function createCatch() {
+        const obj = {
+            'angler': elements.anglerInputField.value,
+            'weight': elements.weightInputField.value,
+            'species': elements.speciesInputField.value,
+            'location': elements.locationInputField.value,
+            'bait': elements.baitInputField.value,
+            'captureTime': elements.captureTimeInputField.value
+        };
+
+        fetch(`https://fisher-game.firebaseio.com/catches.json`, {
+            method: 'POST',
+            body: JSON.stringify(obj)
+        }).then(loadCatches);
+    }
+
+    function loadCatches() {
+        elements.catches.innerHTML = '';
+        fetch(`https://fisher-game.firebaseio.com/catches.json`)
             .then(handler)
-            .then(showAllCatches);
+            .then(showCatches);
     }
 
-    function showAllCatches(data) { // only working if we have the template locally ; will finish later the rest - to work without template
-        Object.keys(data).forEach((key) => {
-            let catchElement = elements.catches.children[0].cloneNode(true);
+    function showCatches(data) {
+        for (const id in data) {
+            let currentCatch = data[id];
+            appendCatchToDOM(currentCatch.angler, currentCatch.bait, currentCatch.captureTime, currentCatch.location, currentCatch.species, currentCatch.weight, id);
+        }
+    }
 
-            elements.catches.children[0].display = 'block';
+    function appendCatchToDOM(angler, bait, captureTime, location, species, weight, id) {
+        const divWrapper = createHTMLelement('div', 'catch', null, { name: 'data-id', value: id });
 
-            catchElement.setAttribute('data-id', key);
-            catchElement.querySelector('input.angler').value = data[key].angler;
-            catchElement.querySelector('input.weight').value = data[key].weight;
-            catchElement.querySelector('input.species').value = data[key].species;
-            catchElement.querySelector('input.location').value = data[key].location;
-            catchElement.querySelector('input.bait').value = data[key].bait;
-            catchElement.querySelector('input.captureTime').value = data[key].captureTime;
-            catchElement.querySelector('button.update').addEventListener('click', updateCatch);
-            catchElement.querySelector('button.delete').addEventListener('click', deleteCatch);
+        const anglerLabel = createHTMLelement('label', null, 'Angler', undefined);
+        const anglerInput = createHTMLelement('input', 'angler', angler, { name: 'type', value: 'text' }, angler);
+        const anglerHr = createHTMLelement('hr');
+        appendChilds(divWrapper, [anglerLabel, anglerInput, anglerHr]);
 
-            elements.catches.appendChild(catchElement);
-        });
+        const weightLabel = createHTMLelement('label', null, 'Weight', undefined);
+        const weightInput = createHTMLelement('input', 'weight', weight, { name: 'type', value: 'number' }, weight);
+        const weightHr = createHTMLelement('hr');
+        appendChilds(divWrapper, [weightLabel, weightInput, weightHr]);
 
+        const speciesLabel = createHTMLelement('label', null, 'Species', undefined);
+        const speciesInput = createHTMLelement('input', 'species', species, { name: 'type', value: 'text' }, species);
+        const speciesHr = createHTMLelement('hr');
+        appendChilds(divWrapper, [speciesLabel, speciesInput, speciesHr]);
 
-        function deleteCatch(event) {
-            let catchId = event.currentTarget.parentNode.getAttribute('data-id');
-            let catchElement = event.currentTarget.parentNode;
+        const locationLabel = createHTMLelement('label', null, 'Location', undefined);
+        const locationInput = createHTMLelement('input', 'location', location, { name: 'type', value: 'text' }, location);
+        const locationHr = createHTMLelement('hr');
+        appendChilds(divWrapper, [locationLabel, locationInput, locationHr]);
 
-            let headers = {
-                method: 'DELETE'
+        const baitLabel = createHTMLelement('label', null, 'Bait', undefined);
+        const baitInput = createHTMLelement('input', 'bait', bait, { name: 'type', value: 'text' }, bait);
+        const baitHr = createHTMLelement('hr');
+        appendChilds(divWrapper, [baitLabel, baitInput, baitHr]);
+
+        const captureTimeLabel = createHTMLelement('label', null, 'Capture Time', undefined);
+        const captureTimeInput = createHTMLelement('input', 'captureTime', captureTime, { name: 'type', value: 'number' }, captureTime);
+        const captureTimeHr = createHTMLelement('hr');
+        appendChilds(divWrapper, [captureTimeLabel, captureTimeInput, captureTimeHr]);
+
+        const updateButton = createHTMLelement('button', 'update', 'Update');
+        const deleteButton = createHTMLelement('button', 'delete', 'Delete');
+        updateButton.addEventListener('click', updateCatch);
+        deleteButton.addEventListener('click', deleteCatch);
+        appendChilds(divWrapper, [updateButton, deleteButton]);
+
+        function updateCatch() {
+            const inputs = [...this.parentNode.children].filter(x => x.tagName === 'INPUT');
+
+            const obj = {
+                'angler': inputs[0].value,
+                'weight': inputs[1].value,
+                'species': inputs[2].value,
+                'location': inputs[3].value,
+                'bait': inputs[4].value,
+                'captureTime': inputs[5].value
             };
 
-            fetch(`https://fisher-game.firebaseio.com/catches/${catchId}.json`, headers)
-                .then(handler)
-                .then((data) => {
-                    //todo
-                });
-        }
-
-        function updateCatch(event) {
-            let catchId = event.currentTarget.parentNode.getAttribute('data-id');
-            let catchElement = event.currentTarget.parentNode;
-
-            let data = Array.from(catchElement.children)
-                .filter((element) => element.tagName === 'INPUT')
-                .reduce((acc, curr) => {
-                    let prop = curr.className;
-
-                    acc[prop] = curr.value;
-
-                    return acc;
-                }, {});
-
-            let headers = {
+            fetch(`https://fisher-game.firebaseio.com/catches/${id}.json`, {
                 method: 'PUT',
-                body: JSON.stringify(data)
-            };
-
-            fetch(`https://fisher-game.firebaseio.com/catches/${catchId}.json`, headers)
-                .then(handler)
-                .then(loadAllCatches);
+                body: JSON.stringify(obj)
+            }).then(loadCatches);
         }
+
+        function deleteCatch() {
+            fetch(`https://fisher-game.firebaseio.com/catches/${id}.json`, {
+                method: 'DELETE'
+            }).then(loadCatches);
+        }
+
+        elements.catches.appendChild(divWrapper);
     }
 
-    function createHTMLelement(tagName, className, textContent, attribute) { // attribute is object
+    function appendChilds(parent, childrenToAppend) {
+        childrenToAppend.forEach(child => {
+            parent.appendChild(child);
+        });
+    }
+
+    function createHTMLelement(tagName, className, textContent, attribute, value) { // attribute is object
         let currentElement = document.createElement(tagName);
 
-        if (typeof className === 'string') {
-            currentElement.classList.add(className);
-        }
-        else if (typeof className === 'object') {
-            currentElement.classList.add(...className);
+        if (className) {
+            if (typeof className === 'string') {
+                currentElement.classList.add(className);
+            }
+            else if (typeof className === 'object') {
+                if (className !== null) {
+                    currentElement.classList.add(...className);
+                }
+            }
         }
 
         if (textContent) {
@@ -91,12 +138,17 @@ function attachEvents() {
             currentElement.setAttribute(attribute.name, attribute.value);
         }
 
+        if (value) {
+            currentElement.value = value;
+        }
+
         return currentElement;
     }
 
     function handler(response) {
         if (response.status > 400) {
-            throw new Error(`Something went wrong. Error ${response.statusText}`)
+            alert(`Error: ${response.statusText}`);
+            return;
         }
 
         return response.json();
