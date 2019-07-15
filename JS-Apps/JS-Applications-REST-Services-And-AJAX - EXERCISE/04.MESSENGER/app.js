@@ -40,7 +40,13 @@ function attachEvents() {
 
         fetch(url)
             .then(response => response.json())
-            .then(data => display(data));
+            .then(data => display(data))
+            .then(() => clearFields());
+    }
+
+    function clearFields() {
+        document.getElementById('author').value = '';
+        document.getElementById('content').value = '';
     }
 }
 
