@@ -1,85 +1,94 @@
 function attachEvents() {
-    let loadButton = document.getElementById('btnLoadPosts');
-    loadButton.addEventListener('click', loadPosts);
+    const elements = {
+        loadButton: document.getElementById('btnLoadPosts'),
+        viewButton: document.getElementById('btnViewPost'),
+        url: `https://blog-apps-c12bf.firebaseio.com/`,
+        posts: document.getElementById('posts'),
+        postTitle: document.getElementById('post-title'),
+        text: document.getElementById('post-body'),
+        comments: document.getElementById('post-comments')
+    };
 
-    let viewButton = document.getElementById('btnViewPost');
-    viewButton.addEventListener('click', viewPost);
-
-    let url = `https://blog-apps-c12bf.firebaseio.com/`;
-    let posts = document.getElementById('posts');
+    elements.viewButton.addEventListener('click', loadSelectedInformation);
+    elements.loadButton.addEventListener('click', loadPosts);
 
     function loadPosts() {
-        let loadPostsURL = url + `posts.json`;
+        const getURL = elements.url + 'posts.json';
+        fetch(getURL)
+            .then(handler)
+            .then(attachPostsToDropDown);
+    };
 
-        fetch(loadPostsURL)
-            .then(response => response.json())
-            .then(data => display(data));
-
-        function display(data) {
-            for (const key in data) {
-                let value = key;
-                let title = data[key].title;
-                appendToDOM(value, title);
-            }
-
-            function appendToDOM(value, title) {
-                let option = document.createElement('option');
-                option.textContent = title;
-                option.setAttribute('value', value);
-                posts.appendChild(option);
-            }
+    function attachPostsToDropDown(data) {
+        for (const key in data) {
+            // const id = data[key].id;
+            const title = data[key].title;
+            const option = makeOptionElement(key, title);
+            elements.posts.appendChild(option);
         }
     }
 
-    function viewPost() {
-        let selectedPost = getSelected();
+    function loadSelectedInformation() {
+        clear();
+        const selectedOptionPostId = getSelectedOption();
+        const viewURL = elements.url + `posts/${selectedOptionPostId}.json`;
 
-        let currentPostURL = url + `posts/${selectedPost}.json`;
-        fetch(currentPostURL)
-            .then(response => response.json())
-            .then(data => getPost(data));
-
-        function getPost(data) {
-            const { body, id, title } = data;
-
-            let currentPostCommentsURL = url + `comments.json`;
-            fetch(currentPostCommentsURL)
-            .then(response => response.json())
-            .then(data => displayComments(data));
-            
-            function displayComments(data) {
-                document.getElementById('post-comments').innerHTML = '';
-                for (const comment in data) {
-                    if (data[comment].postId === id) {
-                        let text = data[comment].text;
-                        let id = data[comment].id;
-
-                        modifyDOM(title, body, text, id);
-                    }
-                }
-            }
-
-            function modifyDOM(title, body, text, id) {
-                document.getElementById('post-title').textContent = title;
-                document.getElementById('post-body').textContent = body;
-
-                let ul = document.getElementById('post-comments');
-                let li = document.createElement('li');
-                li.textContent = text;
-                li.setAttribute('id', id);
-                ul.appendChild(li);
-            }
-        }
-
-
+        fetch(viewURL)
+            .then(handler)
+            .then(showSelectedInformation);
     }
 
-    function getSelected() {
-        for (const post of posts) {
+    function getSelectedOption() {
+        for (const post of elements.posts) {
             if (post.selected) {
                 return post.value;
             }
         }
+    }
+
+    function showSelectedInformation(data) {
+        const idMatch = data.id;
+        elements.postTitle.textContent = data.title;
+        elements.text.textContent = data.body;
+
+        const commentsURL = elements.url + `comments.json`;
+        fetch(commentsURL)
+            .then(handler)
+            .then(findCorrectComments);
+
+        function findCorrectComments(data) {
+            for (const key in data) {
+                if (data[key].postId === idMatch) {
+                    let li = document.createElement('li');
+                    li.textContent = data[key].text;
+
+                    elements.comments.appendChild(li);
+                }
+            }
+        }
+    }
+
+    function makeOptionElement(value, textContext) {
+        let option = document.createElement('option');
+        option.setAttribute('value', value);
+        option.textContent = textContext;
+
+        return option;
+    }
+
+    function clear(){
+        elements.postTitle = 'Post Details';
+        elements.text.innerHTML = '';
+        elements.comments.innerHTML = '';
+    }
+
+    function handler(response) {
+        if (response.status > 400) {
+            alert(`Error: ${response.statusText}`);
+            return;
+        }
+
+        return response.json();
     }
 }
 
