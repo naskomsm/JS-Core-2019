@@ -1,40 +1,51 @@
 function loadCommits() {
-    let username = document.getElementById('username').value;
-    let repo = document.getElementById('repo').value;
-    let commits = document.getElementById('commits');
-    commits.innerHTML = '';
+    const elements = {
+        username: document.getElementById('username'),
+        repository: document.getElementById('repo'),
+        button: document.getElementsByTagName('button')[0],
+        commits: document.getElementById('commits')
+    };
 
-    let url = `https://api.github.com/repos/${username}/${repo}/commits`;
-    fetch(url)
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            }
-            else {
-                displayError(response);
-            }
-        })
-        .then(data => display(data))
+    elements.button.addEventListener('click', loadCommits);
 
-    function display(data) {
-
-        for (const commit in data) {
-            let name = data[commit].commit.author.name;
-            let message = data[commit].commit.message
-
-            appenToDOM(name, message);
-        }
+    function loadCommits() {
+        const url = `https://api.github.com/repos/${elements.username.value}/${elements.repository.value}/commits`;
+        fetch(url)
+            .then(handler)
+            .then(showCommits);
     }
 
-    function appenToDOM(name, message) {
+    function showCommits(data) {
+        data.forEach(commit => {
+            const name = commit.commit.author.name;
+            const message = commit.commit.message;
+
+            updateDOM(name, message);
+        });
+
+        clearFields();
+    };
+
+    function updateDOM(name, message) {
         let li = document.createElement('li');
         li.textContent = `${name}: ${message}`;
-        commits.appendChild(li);
+
+        elements.commits.appendChild(li);
     }
 
-    function displayError(error) {
-        let li = document.createElement('li');
-        li.textContent = `Error: ${error.status} (${error.statusText})`;
-        commits.appendChild(li);
+    function clearFields(){
+        elements.username.value = '';
+        elements.repository.value = '';
+    }
+
+    function handler(response) {
+        if (response.status > 400) {
+            alert(`Error: ${response.statusText}`);
+            return;
+        }
+
+        return response.json();
     }
 }
+
+loadCommits();
