@@ -21,7 +21,6 @@ function attachEvents() {
 
     function attachPostsToDropDown(data) {
         for (const key in data) {
-            // const id = data[key].id;
             const title = data[key].title;
             const option = makeOptionElement(key, title);
             elements.posts.appendChild(option);
