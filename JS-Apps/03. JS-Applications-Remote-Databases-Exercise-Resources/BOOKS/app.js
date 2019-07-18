@@ -7,9 +7,13 @@ function display() {
         submitButton: document.getElementById('submit'),
         baseURL: `https://baas.kinvey.com/appdata/kid_HJ6_eU2bH`,
         usernameAndPasswordEncoded: `Z3Vlc3Q6Z3Vlc3Q=`,
-        books: document.getElementsByTagName('tbody')[0]
+        books: document.getElementsByTagName('tbody')[0],
+        changeSettings: document.getElementById('addForm'),
+        saveBtn: document.getElementById('addForm').children[8],
+        cancelBtn: document.getElementById('addForm').children[9],
     };
 
+    elements.changeSettings.style.display = 'none';
     elements.submitButton.addEventListener('click', submitBook);
     elements.loadAllBooksButton.addEventListener('click', loadAllBooks);
 
@@ -63,7 +67,7 @@ function display() {
     function updateDOM(title, author, isbn, id) {
         const bookTr = createHTMLelement('tr');
 
-        const titleTd = createHTMLelement('td', title);
+        let titleTd = createHTMLelement('td', title);
         const authorTd = createHTMLelement('td', author);
         const isbnTd = createHTMLelement('td', isbn);
 
@@ -74,87 +78,57 @@ function display() {
         buttonDelete.addEventListener('click', deleteBook);
 
         function deleteBook() {
-            if (buttonDelete.textContent === 'Delete') {
-                bookTr.remove();
+           const deleteURL = elements.baseURL + `/Books/${id}`;
 
-                const deleteURL = elements.baseURL + `/Books/${id}`;
+           let headers = new Headers();
+           headers.append('Authorization', 'Basic ' + elements.usernameAndPasswordEncoded);
 
-                let headers = new Headers();
-                headers.append('Authorization', 'Basic ' + elements.usernameAndPasswordEncoded);
-                headers.append('Content-type', 'application/json');
-
-                fetch(deleteURL, {
-                    method: 'delete',
-                    headers: headers
-                }).then(handler).then(loadAllBooks);
-            }
-            else {
-                buttonEdit.textContent = 'Edit';
-                buttonDelete.textContent = 'Delete';
-
-                const title = document.querySelector('body > table:nth-child(2) > tbody:nth-child(2) > tr:nth-child(1) > input:nth-child(6)');
-                const author = document.querySelector('body > table:nth-child(2) > tbody:nth-child(2) > tr:nth-child(1) > input:nth-child(8)');
-                const isbn = document.querySelector('body > table:nth-child(2) > tbody:nth-child(2) > tr:nth-child(1) > input:nth-child(10)');
-
-                title.remove();
-                author.remove();
-                isbn.remove();
-
-                loadAllBooks();
-            }
-        };
+           fetch(deleteURL,{
+                method: 'delete',
+                headers: headers
+           }).then(loadAllBooks);
+        }
 
         function editBook() {
-            if (buttonEdit.textContent === 'Edit') {
-                buttonEdit.textContent = 'Save';
-                buttonDelete.textContent = 'Cancel';
+            if(elements.changeSettings.style.display == 'none'){
+                elements.changeSettings.style.display = 'block';
 
-                let titleH1 = createHTMLelement('h1', 'title');
-                let titleInput = createHTMLelement('input', bookTr.children[0].textContent);
+                elements.saveBtn.addEventListener('click',save);
+                function save(){
+                    const newTitle = document.getElementsByClassName('newTitle')[0];
+                    const newAuthor = document.getElementsByClassName('newAuthor')[0];
+                    const newIsbn = document.getElementsByClassName('newIsbn')[0];
 
-                let authorH1 = createHTMLelement('h1', 'author');
-                let authorInput = createHTMLelement('input', bookTr.children[1].textContent);
+                    
+                    let headers = new Headers();
+                    headers.append('Authorization', 'Basic ' + elements.usernameAndPasswordEncoded);
+                    headers.append('Content-type', 'application/json');
+                    
+                    if(newTitle.value || newAuthor.value || newIsbn.value){
+                        const myObj = {
+                            "title": newTitle.value,
+                            "author": newAuthor.value,
+                            "isbn": newIsbn.value
+                        };
 
-                let isbnH1 = createHTMLelement('h1', 'isbn');
-                let isbnInput = createHTMLelement('input', bookTr.children[2].textContent);
+                        const editURL = elements.baseURL + `/Books/${id}`;
+                        fetch(editURL,{
+                            method: 'put',
+                            headers: headers,
+                            body: JSON.stringify(myObj)
+                        }).then(loadAllBooks);
+                    }
 
-                appendChildren(bookTr, [titleH1, titleInput, authorH1, authorInput, isbnH1, isbnInput]);
+                    elements.changeSettings.style.display = 'none';
+                }
+
+                elements.cancelBtn.addEventListener('click',cancel);
+                function cancel(){
+                    elements.changeSettings.style.display = 'none';
+                }
             }
-            else {
-                buttonEdit.textContent = 'Edit';
-                buttonDelete.textContent = 'Delete';
-
-                const putURL = elements.baseURL + `/Books/${id}`;
-
-                let headers = new Headers();
-                headers.append('Authorization', 'Basic ' + elements.usernameAndPasswordEncoded);
-                headers.append('Content-type', 'application/json');
-
-                let currentTitle = bookTr.children[5];
-                let currentAuthor = bookTr.children[7];
-                let currentIsbn = bookTr.children[9];
-
-                if (currentTitle.value == '') currentTitle.value = title;
-                if (currentAuthor.value == '') currentAuthor.value = author;
-                if (currentIsbn.value == '') currentIsbn.value = isbn;
-
-                const obj = {
-                    "title": currentTitle.value,
-                    "author": currentAuthor.value,
-                    "isbn": currentIsbn.value
-                };
-
-                fetch(putURL, {
-                    method: 'put',
-                    headers: headers,
-                    body: JSON.stringify(obj)
-                }).then(handler).then(loadAllBooks);
-
-                currentTitle.remove();
-                currentAuthor.remove();
-                currentIsbn.remove();
-            }
-        };
+        }
+        
 
         appendChildren(buttonsTd, [buttonEdit, buttonDelete]);
         appendChildren(bookTr, [titleTd, authorTd, isbnTd, buttonsTd]);

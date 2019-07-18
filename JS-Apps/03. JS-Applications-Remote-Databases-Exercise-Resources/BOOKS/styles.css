@@ -96,3 +96,23 @@ form button{
     border: none;
     padding: 0.5%;
 }
+
+fieldset {
+    display: inline-block;
+    border: 2px solid black;
+    width: 5%;
+    margin-left: 43%;
+}
+
+input {
+    padding: 5px 6px;
+    margin: 5px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+label {
+    margin: 5px;
+    border:1px solid white;
+}

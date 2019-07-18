@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <title>Books</title>
     <link rel="stylesheet" href="./styles.css">
 </head>
+
 <body>
     <button id="loadBooks">LOAD ALL BOOKS</button>
     <table>
@@ -19,6 +21,18 @@
             </tr>
         </thead>
         <tbody>
+            <fieldset id="addForm">
+                <legend>Change settings</legend>
+                <label>Title</label>
+                <input type="text" class="newTitle" />
+                <label>Author</label>
+                <input type="text" class="newAuthor" />
+                <label>IsBn</label>
+                <input type="text" class="newIsbn" />
+                <br>
+                <button id="save">Save</button>
+                <button id="cancel">Cancel</button>
+            </fieldset>
         </tbody>
     </table>
 
@@ -34,6 +48,7 @@
     </form>
     <script src="./app.js"></script>
 </body>
+
 </html>
 
 <!--Feel free to change/update/modify the HTML Structure-->

@@ -43,3 +43,9 @@ table tbody tr:nth-child(even) button{
 table tr:hover{
     text-decoration: underline;
 }
+
+
+aside {
+    width: 15%;
+    display: inline-block;
+}
