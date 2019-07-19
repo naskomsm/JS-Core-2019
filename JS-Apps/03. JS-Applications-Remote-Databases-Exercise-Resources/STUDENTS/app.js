@@ -1,6 +1,5 @@
 function students() {
     const elements = {
-        usernameAndPasswordEncoded: `Z3Vlc3Q6Z3Vlc3Q=`,
         loadButton: document.getElementsByClassName('load')[0],
         addButton: document.getElementsByClassName('add')[0],
         baseURL: `https://baas.kinvey.com/appdata/kid_HJ6_eU2bH`,
@@ -10,6 +9,8 @@ function students() {
         lastName: document.getElementsByClassName('lastName')[0],
         facultyNumber: document.getElementsByClassName('facultyNumber')[0],
         grade: document.getElementsByClassName('grade')[0],
+        username: 'guest',
+        password: 'guest'
     }
 
     let allStudents = [];
@@ -17,9 +18,11 @@ function students() {
     elements.addButton.addEventListener('click', addStudent);
     elements.loadButton.addEventListener('click', loadStudents);
 
-    let headers = new Headers();
-    headers.append('Authorization', 'Basic ' + elements.usernameAndPasswordEncoded);
-    headers.append('Content-type', 'application/json');
+    let base_64 = btoa(elements.username + ':' + elements.password);
+    const auth = {
+        'Authorization': "Basic " + base_64,
+        "Content-type": "application/json"
+    };
 
     function loadStudents() {
         const loadURL = elements.baseURL + `/students`;
@@ -27,7 +30,7 @@ function students() {
 
         fetch(loadURL, {
             method: 'get',
-            headers: headers
+            headers: auth
         })
             .then(handler)
             .then(showStudents);
@@ -79,7 +82,7 @@ function students() {
 
             fetch(addURL, {
                 method: 'post',
-                headers:headers,
+                headers: auth,
                 body: JSON.stringify(myObj),
             }).then(loadStudents);
 
