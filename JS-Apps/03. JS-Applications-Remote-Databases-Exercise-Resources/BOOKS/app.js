@@ -6,11 +6,12 @@ function display() {
         isbn: document.getElementById('isbn'),
         submitButton: document.getElementById('submit'),
         baseURL: `https://baas.kinvey.com/appdata/kid_HJ6_eU2bH`,
-        usernameAndPasswordEncoded: `Z3Vlc3Q6Z3Vlc3Q=`,
         books: document.getElementsByTagName('tbody')[0],
         changeSettings: document.getElementById('addForm'),
         saveBtn: document.getElementById('addForm').children[8],
         cancelBtn: document.getElementById('addForm').children[9],
+        username: 'guest',
+        password: 'guest'
     };
 
     elements.changeSettings.style.display = 'none';
@@ -20,9 +21,11 @@ function display() {
     function submitBook(e) {
         const createURL = elements.baseURL + '/Books';
 
-        let headers = new Headers();
-        headers.append('Authorization', 'Basic ' + elements.usernameAndPasswordEncoded);
-        headers.append('Content-type', 'application/json');
+        let base_64 = btoa(elements.username + ':' + elements.password);
+        const auth = {
+            'Authorization': "Basic " + base_64,
+            "Content-type": "application/json"
+        };
 
         if (elements.title.value && elements.author.value && elements.isbn.value) {
             const obj = {
@@ -33,7 +36,7 @@ function display() {
 
             fetch(createURL, {
                 method: 'post',
-                headers: headers,
+                headers: auth,
                 body: JSON.stringify(obj)
             }).then(handler).then(loadAllBooks);
         }
@@ -46,12 +49,15 @@ function display() {
         elements.books.innerHTML = 'Loading....';
         const booksURL = elements.baseURL + '/Books';
 
-        let headers = new Headers();
-        headers.append('Authorization', 'Basic ' + elements.usernameAndPasswordEncoded);
+        let base_64 = btoa(elements.username + ':' + elements.password);
+        const auth = {
+            'Authorization': "Basic " + base_64,
+            "Content-type": "application/json"
+        };
 
         fetch(booksURL, {
             method: 'get',
-            headers: headers
+            headers: auth
         })
             .then(handler)
             .then(showAllBooks);
@@ -59,9 +65,11 @@ function display() {
 
     function showAllBooks(data) {
         elements.books.innerHTML = '';
-        data.forEach(book => {
-            updateDOM(book.title, book.author, book.isbn, book._id);
-        });
+        if(data.length > 0){
+            data.forEach(book => {
+                updateDOM(book.title, book.author, book.isbn, book._id);
+            });
+        }
     }
 
     function updateDOM(title, author, isbn, id) {
@@ -80,12 +88,15 @@ function display() {
         function deleteBook() {
            const deleteURL = elements.baseURL + `/Books/${id}`;
 
-           let headers = new Headers();
-           headers.append('Authorization', 'Basic ' + elements.usernameAndPasswordEncoded);
+           let base_64 = btoa(elemeents.userName + ':' + elemeents.password);
+           const auth = {
+               'Authorization': "Basic " + base_64,
+               "Content-type": "application/json"
+           };
 
            fetch(deleteURL,{
                 method: 'delete',
-                headers: headers
+                headers: auth
            }).then(loadAllBooks);
         }
 
@@ -98,23 +109,24 @@ function display() {
                     const newTitle = document.getElementsByClassName('newTitle')[0];
                     const newAuthor = document.getElementsByClassName('newAuthor')[0];
                     const newIsbn = document.getElementsByClassName('newIsbn')[0];
+                    
+                    let base_64 = btoa(elements.username + ':' + elements.password);
+                    const auth = {
+                        'Authorization': "Basic " + base_64,
+                        "Content-type": "application/json"
+                    };
 
-                    
-                    let headers = new Headers();
-                    headers.append('Authorization', 'Basic ' + elements.usernameAndPasswordEncoded);
-                    headers.append('Content-type', 'application/json');
-                    
                     if(newTitle.value || newAuthor.value || newIsbn.value){
                         const myObj = {
-                            "title": newTitle.value,
-                            "author": newAuthor.value,
-                            "isbn": newIsbn.value
+                            "title": newTitle.value || title,
+                            "author": newAuthor.value || author,
+                            "isbn": newIsbn.value || isbn
                         };
 
                         const editURL = elements.baseURL + `/Books/${id}`;
                         fetch(editURL,{
                             method: 'put',
-                            headers: headers,
+                            headers: auth,
                             body: JSON.stringify(myObj)
                         }).then(loadAllBooks);
                     }
