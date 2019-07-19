@@ -50,10 +50,6 @@ function venues() {
         updateDOM(_id, description, name, price, startingHour);
     }
 
-    function showMoreInfo(){
-        console.log("WROKING")
-    }
-
     function updateDOM(_id, description, name, price, startingHour) {
         const divContainer = createHTMLelement('div', 'venue', { name: 'id', value: _id });
 
@@ -104,6 +100,10 @@ function venues() {
 
         appendChildren(divContainer, [venueNameSpan, venueDetailsDiv]);
         elements.venueInfo.appendChild(divContainer);
+
+        function showMoreInfo(){
+           //todo
+        }
     }
 
 
