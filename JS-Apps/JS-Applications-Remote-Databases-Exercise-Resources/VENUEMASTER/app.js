@@ -88,7 +88,7 @@ function venues() {
         appendChildren(tr2, [tr2td1, tr2td2, tr2td3]);
         appendChildren(table, [tr1, tr2]);
 
-        const spanHead = createHTMLelement('spanw', 'head', null, null, null); // append to divContainer
+        const spanHead = createHTMLelement('span', 'head', null, null, null); // append to divContainer
         spanHead.innerHTML = 'Venue description:';
         const p1Description = createHTMLelement('p', 'description', null, null, null); // append to divContainer
         p1Description.innerHTML = description;
