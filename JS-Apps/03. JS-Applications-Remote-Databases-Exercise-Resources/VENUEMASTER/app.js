@@ -19,11 +19,11 @@ function venues() {
     function getVenues() {
         elements.venueInfo.innerHTML = 'Loading...';
         const postURL = elements.baseURL + `/rpc/kid_BJ_Ke8hZg/custom/calendar?query=${elements.dataInput.value}`;
-        
+
         const myObj = {
             date: elements.dataInput.value
         }
-        
+
         clear();
         fetch(postURL, {
             method: 'post',
@@ -35,7 +35,7 @@ function venues() {
     function getInfoForeachVenue(data) {
         data.forEach(id => {
             const getURL = elements.baseURL + `/appdata/kid_BJ_Ke8hZg/venues/${id}`;
-            
+
             elements.venueInfo.innerHTML = '';
             fetch(getURL, {
                 method: 'get',
@@ -43,10 +43,10 @@ function venues() {
             }).then(handler).then(showInfoForeachVenue)
         });
     }
-    
+
     function showInfoForeachVenue(data) {
         const { _id, description, name, price, startingHour } = data;
-        
+
         updateDOM(_id, description, name, price, startingHour);
     }
 
@@ -55,8 +55,7 @@ function venues() {
 
         //divContainer Children
         const venueNameSpan = createHTMLelement('span', 'venue-name', null, null, null); // append to divContainer
-        let moreInfoButton = createHTMLelement('input', 'info', null, { name: 'type', value: 'button' }, { name: 'value', value: 'More info' });
-        moreInfoButton.addEventListener('click',showMoreInfo);
+        const moreInfoButton = createHTMLelement('input', 'info', null, { name: 'type', value: 'button' }, { name: 'value', value: 'More info' });
         venueNameSpan.appendChild(moreInfoButton);
         venueNameSpan.innerHTML += name;
 
@@ -93,7 +92,7 @@ function venues() {
         spanHead.innerHTML = 'Venue description:';
         const p1Description = createHTMLelement('p', 'description', null, null, null); // append to divContainer
         p1Description.innerHTML = description;
-        const p2Description = createHTMLelement('p','description',null,null,null); // append to divContainer
+        const p2Description = createHTMLelement('p', 'description', null, null, null); // append to divContainer
         p2Description.innerHTML = `Starting time: ${startingHour}`;
 
         appendChildren(venueDetailsDiv, [table, spanHead, p1Description, p2Description]);
@@ -101,25 +100,49 @@ function venues() {
         appendChildren(divContainer, [venueNameSpan, venueDetailsDiv]);
         elements.venueInfo.appendChild(divContainer);
 
-        function showMoreInfo(){
-           //todo
+        const buttonToAddEventListener = document.getElementById(_id).children[0].children[0];
+        buttonToAddEventListener.addEventListener('click', showMoreInfo);
+        function showMoreInfo() {
+            const currentDescription = document.getElementById(_id).children[1];
+            currentDescription.style.display = 'block';
+
+            const purchaseButton = document.getElementById(_id).children[1].children[0].children[1].children[2].children[0];
+            purchaseButton.addEventListener('click', purchase);
+
+            function purchase() {
+                const dropdownMenu = document.getElementById(_id).children[1].children[0].children[1].children[1].children[0];
+                const qty = dropdownMenu.value;
+                elements.venueInfo.innerHTML = `<span class="head">Confirm purchase</span>
+                <div class="purchase-info">
+                    <span>${name}</span>
+                    <span>${qty} x ${price}</span>
+                    <span>Total: ${qty * price} lv</span>
+                    <input type="button" value="Confirm">
+                </div>`;
+
+                const confirmButton = elements.venueInfo.children[1].children[3];
+                confirmButton.addEventListener('click',confirmation);
+
+                function confirmation(){
+                    elements.venueInfo.innerHTML = 'Confirming...';
+                    const postURL = elements.baseURL + `/rpc/kid_BJ_Ke8hZg/custom/purchase?venue=${_id}&qty=${qty}`;
+
+                    fetch(postURL,{
+                        method: 'post',
+                        headers: auth
+                    }).then(handler).then(showConfirmationInfo);
+                }
+
+                function showConfirmationInfo(data){
+                    const { html }  = data;
+                    elements.venueInfo.innerHTML = `You may print this page as your ticket. ${html}`;
+                }
+            }
+
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-    // usefull functions //
-
-    function clear(){
+    
+    function clear() {
         elements.dataInput.value = '';
     }
 
