@@ -1,190 +1,174 @@
-function display() {
-    const elements = {
-        loadAllBooksButton: document.getElementById('loadBooks'),
-        title: document.getElementById('title'),
-        author: document.getElementById('author'),
-        isbn: document.getElementById('isbn'),
-        submitButton: document.getElementById('submit'),
-        baseURL: `https://baas.kinvey.com/appdata/kid_HJ6_eU2bH`,
-        books: document.getElementsByTagName('tbody')[0],
-        changeSettings: document.getElementById('addForm'),
-        saveBtn: document.getElementById('addForm').children[8],
-        cancelBtn: document.getElementById('addForm').children[9],
-        username: 'guest',
-        password: 'guest'
-    };
+const elements = {
+    loadBooksBtn: document.getElementById('loadBooks'),
+    submitBookBtn: document.getElementById('submit'),
+    doneBtn: document.getElementById('done'),
+    cancelBtn: document.getElementById('cancel'),
+    bookUI: document.getElementsByTagName('tbody')[0],
+    titleInput: document.getElementById('title'),
+    authorInput: document.getElementById('author'),
+    isbnInput: document.getElementById('isbn')
+};
 
-    elements.changeSettings.style.display = 'none';
-    elements.submitButton.addEventListener('click', submitBook);
-    elements.loadAllBooksButton.addEventListener('click', loadAllBooks);
+const authInfo = `Basic ${btoa('guest:guest')}`;
 
-    function submitBook(e) {
-        const createURL = elements.baseURL + '/Books';
-
-        let base_64 = btoa(elements.username + ':' + elements.password);
-        const auth = {
-            'Authorization': 'Basic ' + base_64,
-            'Content-type': 'application/json'
-        };
-
-        if (elements.title.value && elements.author.value && elements.isbn.value) {
-            const obj = {
-                "title": elements.title.value,
-                "author": elements.author.value,
-                "isbn": elements.isbn.value
-            };
-
-            fetch(createURL, {
-                method: 'post',
-                headers: auth,
-                body: JSON.stringify(obj)
-            }).then(handler).then(loadAllBooks);
+const loadBooks = async function () {
+    elements.bookUI.innerHTML = 'Loading...';
+    const url = `https://baas.kinvey.com/appdata/kid_HJ6_eU2bH/Books`;
+    fetch(url, {
+        method: 'get',
+        headers: {
+            'Authorization': authInfo,
+            'Content-Type': 'application/json'
         }
+    }).then(handler).then(displayBooks);
+};
 
-        clear();
-        e.preventDefault();
-    }
+const displayBooks = (books) => {
+    elements.bookUI.innerHTML = '';
+    const fragment = document.createDocumentFragment();
 
-    function loadAllBooks() {
-        elements.books.innerHTML = 'Loading....';
-        const booksURL = elements.baseURL + '/Books';
+    books.forEach(book => {
+        const bookTr = document.createElement('tr');
 
-        let base_64 = btoa(elements.username + ':' + elements.password);
-        const auth = {
-            'Authorization': 'Basic ' + base_64,
-            'Content-type': 'application/json'
-        };
-
-        fetch(booksURL, {
-            method: 'get',
-            headers: auth
-        })
-            .then(handler)
-            .then(showAllBooks);
-    }
-
-    function showAllBooks(data) {
-        elements.books.innerHTML = '';
-        if (data.length > 0) {
-            data.forEach(book => {
-                updateDOM(book.title, book.author, book.isbn, book._id);
-            });
-        }
-    }
-
-    function updateDOM(title, author, isbn, id) {
-        const bookTr = createHTMLelement('tr');
-
-        let titleTd = createHTMLelement('td', title);
-        const authorTd = createHTMLelement('td', author);
-        const isbnTd = createHTMLelement('td', isbn);
+        const titleTd = createHTMLelement('td', book.title);
+        const authorTd = createHTMLelement('td', book.author);
+        const isbnTd = createHTMLelement('td', book.isbn);
 
         const buttonsTd = createHTMLelement('td');
         const buttonEdit = createHTMLelement('button', 'Edit');
         const buttonDelete = createHTMLelement('button', 'Delete');
-        buttonEdit.addEventListener('click', editBook);
-        buttonDelete.addEventListener('click', deleteBook);
 
-        function deleteBook() {
-            const deleteURL = elements.baseURL + `/Books/${id}`;
-
-            let base_64 = btoa(elements.username + ':' + elements.password);
-            const auth = {
-                'Authorization': 'Basic ' + base_64,
-                'Content-type': 'application/json'
-            };
-
-            fetch(deleteURL, {
-                method: 'delete',
-                headers: auth
-            }).then(loadAllBooks);
-        }
-
-        function editBook() {
-            if (elements.changeSettings.style.display == 'none') {
-                elements.changeSettings.style.display = 'block';
-
-                elements.saveBtn.addEventListener('click', save);
-                function save() {
-                    let newTitle = document.getElementsByClassName('newTitle')[0];
-                    let newAuthor = document.getElementsByClassName('newAuthor')[0];
-                    let newIsbn = document.getElementsByClassName('newIsbn')[0];
-
-                    let base_64 = btoa(elements.username + ':' + elements.password);
-                    const auth = {
-                        'Authorization': 'Basic ' + base_64,
-                        'Content-type': 'application/json'
-                    };
-
-                    if (newTitle.value || newAuthor.value || newIsbn.value) {
-                        const myObj = {
-                            "title": newTitle.value || title,
-                            "author": newAuthor.value || author,
-                            "isbn": newIsbn.value || isbn
-                        };
-
-                        const editURL = elements.baseURL + `/Books/${id}`;
-                        fetch(editURL, {
-                            method: 'put',
-                            headers: auth,
-                            body: JSON.stringify(myObj)
-                        }).then(loadAllBooks);
-
-                        newTitle.value = '';
-                        newAuthor.value = '';
-                        newIsbn.value = '';
-                    }
-
-                    elements.changeSettings.style.display = 'none';
-                }
-
-                elements.cancelBtn.addEventListener('click', cancel);
-                function cancel() {
-                    elements.changeSettings.style.display = 'none';
-                }
-            }
-        }
-
+        buttonEdit.addEventListener('click', () => editBook(book._id, book.title, book.author, book.isbn));
+        buttonDelete.addEventListener('click', () => deleteBook(book._id));
 
         appendChildren(buttonsTd, [buttonEdit, buttonDelete]);
         appendChildren(bookTr, [titleTd, authorTd, isbnTd, buttonsTd]);
-        elements.books.appendChild(bookTr);
-    }
+        fragment.appendChild(bookTr);
+    });
 
-    function appendChildren(parent, children) {
-        children.forEach((child) => {
-            parent.appendChild(child);
-        });
-    }
+    elements.bookUI.appendChild(fragment);
+};
 
-    function createHTMLelement(tagName, textContent, placeholder) {
-        let element = document.createElement(tagName);
+const editBook = (id, oldTitle, oldAuthor, oldIsbn) => {
+    const formTitle = document.getElementsByTagName('h3')[0];
+    formTitle.textContent = 'Change book';
 
-        if (textContent) {
-            element.textContent = textContent;
+    elements.titleInput.value = oldTitle;
+    elements.authorInput.value = oldAuthor;
+    elements.isbnInput.value = oldIsbn;
+
+    elements.submitBookBtn.style.display = 'none';
+    elements.doneBtn.style.display = 'block';
+    elements.cancelBtn.style.display = 'block';
+
+    const editTheBook = (ev) => {
+        const url = `https://baas.kinvey.com/appdata/kid_HJ6_eU2bH/Books/${id}`;
+
+        const myObj = {
+            'title': elements.titleInput.value,
+            'author': elements.authorInput.value,
+            'isbn': elements.isbnInput.value
+        };
+
+        fetch(url, {
+            method: 'put',
+            headers: {
+                'Authorization': authInfo,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(myObj)
+        }).then(loadBooks);
+
+        formTitle.textContent = 'FORM';
+        elements.submitBookBtn.style.display = 'block';
+        elements.doneBtn.style.display = 'none';
+        elements.cancelBtn.style.display = 'none';
+
+        elements.titleInput.value = '';
+        elements.authorInput.value = '';
+        elements.isbnInput.value = '';
+
+        ev.preventDefault();
+    };
+
+    const cancelTheBook = (ev) => {
+        formTitle.textContent = 'FORM';
+        elements.submitBookBtn.style.display = 'block';
+        elements.doneBtn.style.display = 'none';
+        elements.cancelBtn.style.display = 'none';
+
+        elements.titleInput.value = '';
+        elements.authorInput.value = '';
+        elements.isbnInput.value = '';
+
+        ev.preventDefault();
+    };
+
+    elements.doneBtn.addEventListener('click', editTheBook);
+    elements.cancelBtn.addEventListener('click', cancelTheBook);
+};
+
+const deleteBook = (id) => {
+    const url = `https://baas.kinvey.com/appdata/kid_HJ6_eU2bH/Books/${id}`;
+    fetch(url, {
+        method: 'delete',
+        headers: {
+            'Authorization': authInfo,
+            'Content-Type': 'application/json'
         }
+    }).then(loadBooks);
+};
 
-        if (placeholder) {
-            element.setAttribute('placeholder', placeholder);
-        }
+const createBook = async function (e) {
+    const newBook = {
+        'title': elements.titleInput.value,
+        'author': elements.authorInput.value,
+        'isbn': elements.isbnInput.value
+    };
 
-        return element;
+    const url = `https://baas.kinvey.com/appdata/kid_HJ6_eU2bH/Books`;
+    fetch(url, {
+        method: 'post',
+        headers: {
+            'Authorization': authInfo,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(newBook)
+    }).then(handler).then(loadBooks);
+
+    e.preventDefault();
+};
+
+const createHTMLelement = (tagName, textContent, placeholder) => {
+    let element = document.createElement(tagName);
+
+    if (textContent) {
+        element.textContent = textContent;
     }
 
-    function clear() {
-        elements.title.value = '';
-        elements.author.value = '';
-        elements.isbn.value = '';
+    if (placeholder) {
+        element.setAttribute('placeholder', placeholder);
     }
 
-    function handler(response) {
-        if (response.status > 400) {
-            alert(`Error: ${response.statusText}`);
-            return;
-        }
+    return element;
+};
 
-        return response.json();
-    }
+const appendChildren = (parent, children) => {
+    children.forEach((child) => {
+        parent.appendChild(child);
+    });
 }
 
-display();
+const handler = (response) => {
+    if (response.status > 400) {
+        alert(`Error: ${response.statusText}`);
+        return;
+    }
+
+    return response.json();
+}
+
+(function attachEvents() {
+    //Add the event listeners here
+    elements.loadBooksBtn.addEventListener('click', loadBooks);
+})();
