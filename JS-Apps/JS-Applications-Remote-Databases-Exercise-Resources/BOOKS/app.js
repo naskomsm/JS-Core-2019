@@ -11,7 +11,7 @@ const elements = {
 
 const authInfo = `Basic ${btoa('guest:guest')}`;
 
-const loadBooks = async function () {
+const loadBooks =  () => {
     elements.bookUI.innerHTML = 'Loading...';
     const url = `https://baas.kinvey.com/appdata/kid_HJ6_eU2bH/Books`;
     fetch(url, {
