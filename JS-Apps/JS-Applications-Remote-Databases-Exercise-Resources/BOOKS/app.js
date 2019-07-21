@@ -23,8 +23,8 @@ function display() {
 
         let base_64 = btoa(elements.username + ':' + elements.password);
         const auth = {
-            'Authorization': "Basic " + base_64,
-            "Content-type": "application/json"
+            'Authorization': 'Basic ' + base_64,
+            'Content-type': 'application/json'
         };
 
         if (elements.title.value && elements.author.value && elements.isbn.value) {
@@ -51,8 +51,8 @@ function display() {
 
         let base_64 = btoa(elements.username + ':' + elements.password);
         const auth = {
-            'Authorization': "Basic " + base_64,
-            "Content-type": "application/json"
+            'Authorization': 'Basic ' + base_64,
+            'Content-type': 'application/json'
         };
 
         fetch(booksURL, {
@@ -65,7 +65,7 @@ function display() {
 
     function showAllBooks(data) {
         elements.books.innerHTML = '';
-        if(data.length > 0){
+        if (data.length > 0) {
             data.forEach(book => {
                 updateDOM(book.title, book.author, book.isbn, book._id);
             });
@@ -86,37 +86,37 @@ function display() {
         buttonDelete.addEventListener('click', deleteBook);
 
         function deleteBook() {
-           const deleteURL = elements.baseURL + `/Books/${id}`;
+            const deleteURL = elements.baseURL + `/Books/${id}`;
 
-           let base_64 = btoa(elemeents.userName + ':' + elemeents.password);
-           const auth = {
-               'Authorization': "Basic " + base_64,
-               "Content-type": "application/json"
-           };
+            let base_64 = btoa(elements.username + ':' + elements.password);
+            const auth = {
+                'Authorization': 'Basic ' + base_64,
+                'Content-type': 'application/json'
+            };
 
-           fetch(deleteURL,{
+            fetch(deleteURL, {
                 method: 'delete',
                 headers: auth
-           }).then(loadAllBooks);
+            }).then(loadAllBooks);
         }
 
         function editBook() {
-            if(elements.changeSettings.style.display == 'none'){
+            if (elements.changeSettings.style.display == 'none') {
                 elements.changeSettings.style.display = 'block';
 
-                elements.saveBtn.addEventListener('click',save);
-                function save(){
-                    const newTitle = document.getElementsByClassName('newTitle')[0];
-                    const newAuthor = document.getElementsByClassName('newAuthor')[0];
-                    const newIsbn = document.getElementsByClassName('newIsbn')[0];
-                    
+                elements.saveBtn.addEventListener('click', save);
+                function save() {
+                    let newTitle = document.getElementsByClassName('newTitle')[0];
+                    let newAuthor = document.getElementsByClassName('newAuthor')[0];
+                    let newIsbn = document.getElementsByClassName('newIsbn')[0];
+
                     let base_64 = btoa(elements.username + ':' + elements.password);
                     const auth = {
-                        'Authorization': "Basic " + base_64,
-                        "Content-type": "application/json"
+                        'Authorization': 'Basic ' + base_64,
+                        'Content-type': 'application/json'
                     };
 
-                    if(newTitle.value || newAuthor.value || newIsbn.value){
+                    if (newTitle.value || newAuthor.value || newIsbn.value) {
                         const myObj = {
                             "title": newTitle.value || title,
                             "author": newAuthor.value || author,
@@ -124,23 +124,27 @@ function display() {
                         };
 
                         const editURL = elements.baseURL + `/Books/${id}`;
-                        fetch(editURL,{
+                        fetch(editURL, {
                             method: 'put',
                             headers: auth,
                             body: JSON.stringify(myObj)
                         }).then(loadAllBooks);
+
+                        newTitle.value = '';
+                        newAuthor.value = '';
+                        newIsbn.value = '';
                     }
 
                     elements.changeSettings.style.display = 'none';
                 }
 
-                elements.cancelBtn.addEventListener('click',cancel);
-                function cancel(){
+                elements.cancelBtn.addEventListener('click', cancel);
+                function cancel() {
                     elements.changeSettings.style.display = 'none';
                 }
             }
         }
-        
+
 
         appendChildren(buttonsTd, [buttonEdit, buttonDelete]);
         appendChildren(bookTr, [titleTd, authorTd, isbnTd, buttonsTd]);
