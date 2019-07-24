@@ -16,10 +16,10 @@ const homeController = function () {
         }
 
         context.loadPartials({
-            header: "../Views/common/header.hbs",
-            footer: "../Views/common/footer.hbs"
+            header: "../views/common/header.hbs",
+            footer: "../views/common/footer.hbs"
         }).then(function () {
-            this.partial('../Views/home/home.hbs')
+            this.partial('../views/home/home.hbs')
         })
     };
 
@@ -33,10 +33,10 @@ const homeController = function () {
         }
 
         context.loadPartials({
-            header: "../Views/common/header.hbs",
-            footer: "../Views/common/footer.hbs"
+            header: "../views/common/header.hbs",
+            footer: "../views/common/footer.hbs"
         }).then(function () {
-            this.partial('../Views/about/about.hbs')
+            this.partial('../views/about/about.hbs')
         })
     };
 
@@ -50,10 +50,10 @@ const homeController = function () {
         }
 
         context.loadPartials({
-            header: "../Views/common/header.hbs",
-            footer: "../Views/common/footer.hbs"
+            header: "../views/common/header.hbs",
+            footer: "../views/common/footer.hbs"
         }).then(function () {
-            this.partial('../Views/catalog/teamCatalog.hbs')
+            this.partial('../views/catalog/teamCatalog.hbs')
         })
     };
 
