@@ -1,46 +1,41 @@
 const userController = function () {
-
-    const getRegister = function (context) {
-
+    const getLogin = function (context) {
         context.loadPartials({
-            header: "../views/common/header.hbs",
-            footer: "../views/common/footer.hbs"
+            header: "../Views/common/header.hbs",
+            footer: "../Views/common/footer.hbs"
         }).then(function () {
-            this.partial('../views/register/registerPage.hbs')
+            this.partial('../Views/login/loginPage.hbs')
         })
     };
 
-    const getLogin = function (context) {
+    const getRegister = function (context) {
         context.loadPartials({
-            header: "../views/common/header.hbs",
-            footer: "../views/common/footer.hbs"
+            header: "../Views/common/header.hbs",
+            footer: "../Views/common/footer.hbs"
         }).then(function () {
-            this.partial('../views/login/loginPage.hbs')
+            this.partial('../Views/register/registerPage.hbs')
         })
     };
 
     const postRegister = function (context) {
-
         userModel.register(context.params)
             .then(helper.handler)
-            .then((data) => {
+            .then(data => {
                 storage.saveUser(data);
                 homeController.getHome(context);
             })
     };
 
     const postLogin = function (context) {
-
         userModel.login(context.params)
             .then(helper.handler)
-            .then((data) => {
+            .then(data => {
                 storage.saveUser(data);
                 homeController.getHome(context);
             })
     };
 
     const logout = function (context) {
-
         userModel.logout()
             .then(helper.handler)
             .then(() => {
@@ -50,10 +45,10 @@ const userController = function () {
     };
 
     return {
+        getLogin,
         getRegister,
         postRegister,
-        getLogin,
         postLogin,
         logout
-    }
+    };
 }();

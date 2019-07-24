@@ -1,7 +1,6 @@
 const storage = function () {
-
-    const appKey = "kid_Byo6HGQfS";
-    const appSecret = "8eeb43af57584c13b66a40629d138c6d";
+    const appKey = 'kid_Byo6HGQfS';
+    const appSecret = '8eeb43af57584c13b66a40629d138c6d';
 
     const getData = function (key) {
         return localStorage.getItem(key + appKey);
@@ -12,19 +11,24 @@ const storage = function () {
     };
 
     const saveUser = function (data) {
-        saveData("userInfo", data);
-        saveData("authToken", data._kmd.authtoken);
+        saveData('userInfo', data);
+        saveData('authToken', data._kmd.authtoken);
     };
 
+    const saveTeam = function(data){
+        saveData('teamInfo',data);
+        saveData('authToken', data._kmd.authtoken);
+    }
+
     const deleteUser = function () {
-        localStorage.removeItem("userInfo" + appKey);
-        localStorage.removeItem("authToken" + appKey);
+        localStorage.removeItem('userInfo' + appKey);
+        localStorage.removeItem('authToken' + appKey);
     };
 
     return {
         getData,
-        saveData,
         saveUser,
+        saveTeam,
         deleteUser,
         appKey,
         appSecret

@@ -1,9 +1,14 @@
 const app = Sammy("#main", function () {
-
     this.use('Handlebars', 'hbs');
 
     // Home
     this.get('#/home', homeController.getHome);
+
+    // About
+    this.get('#/about',homeController.getAbout);
+
+    // Catalog
+    this.get('#/catalog',homeController.getCatalog);
 
     // User
     this.get('#/register', userController.getRegister);
@@ -11,8 +16,9 @@ const app = Sammy("#main", function () {
 
     this.post('#/register', userController.postRegister);
     this.post('#/login', userController.postLogin);
-    this.get('#/logout', userController.logout);
     
+    this.get('#/logout', userController.logout);
+
 });
 
 (() => {

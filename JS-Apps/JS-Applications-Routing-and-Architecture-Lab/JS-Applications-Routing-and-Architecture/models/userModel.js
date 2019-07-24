@@ -22,7 +22,7 @@ const userModel = function () {
     };
 
     const login = function (params) {
-
+        
         let url = `/user/${storage.appKey}/login`;
 
         let auth = btoa(`${params.username}:${params.password}`);
@@ -32,19 +32,19 @@ const userModel = function () {
             headers: {
                 Authorization: authString
             },
-            body: JSON.stringify({...params})
+            body: JSON.stringify({ ...params })
         };
 
         return requester.post(url, headers);
     };
 
     const logout = function () {
-    
+
         let url = `/user/${storage.appKey}/_logout`;
         let headers = {
             headers: {}
         };
-        
+
         return requester.post(url, headers);
     };
 
