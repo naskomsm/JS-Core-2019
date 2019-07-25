@@ -1,5 +1,7 @@
 const helper = function () {
+
     const handler = function (response) {
+
         if (response.status >= 400) {
             throw new Error(`Something went wrong. Error: ${response.statusText}`);
         }
@@ -12,11 +14,11 @@ const helper = function () {
     };
 
     const passwordCheck = function (params) {
-        return params.password === params.repeatPassword;
+        return params.password === params.rePassword;
     };
 
     return {
         handler,
         passwordCheck
-    };
+    }
 }();

@@ -1,5 +1,4 @@
 const userModel = function () {
-
     const register = function (params) {
         let data = {
             username: params.username,
@@ -22,7 +21,7 @@ const userModel = function () {
     };
 
     const login = function (params) {
-        
+
         let url = `/user/${storage.appKey}/login`;
 
         let auth = btoa(`${params.username}:${params.password}`);

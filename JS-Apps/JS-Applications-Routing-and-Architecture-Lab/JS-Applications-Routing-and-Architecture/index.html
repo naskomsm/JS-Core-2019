@@ -12,11 +12,14 @@
 </head>
 
 <body>
+
+  <div id="main">
+  </div>
+
   <div id="infoBox" class="notification" disabled></div>
   <div id="errorBox" class="notification" disabled></div>
   <div id="main"></div>
 
-  <!-- Frameworks used -->
   <script src="./node_modules/jquery/dist/jquery.min.js"></script>
   <script src="./node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
   <script src="./node_modules/handlebars/dist/handlebars.min.js"></script>
@@ -24,20 +27,19 @@
   <script src="./node_modules/sammy/lib/min/plugins/sammy.handlebars-0.7.6.min.js"></script>
 
   <!-- Helpers -->
-  <script src="./Helpers/helper.js"></script>
-  <script src="./Helpers/requester.js"></script>
-  <script src="./Helpers/storage.js"></script>
+  <script src="./helpers/requester.js"></script>
+  <script src="./helpers/storage.js"></script>
+  <script src="./helpers/helper.js"></script>
 
   <!-- Controllers -->
-  <script src="./Controllers/homeController.js"></script>
-  <script src="./Controllers/userController.js"></script>
+  <script src="./controllers/homeController.js"></script>
+  <script src="./controllers/userController.js"></script>
 
-  <!-- Models -->
-  <script src="./Models/userModel.js"></script>
+  <!--Models -->
+  <script src="./models/userModel.js"></script>
 
-  <!-- App -->
+  <!--App -->
   <script src="./scripts/app.js"></script>
-
 </body>
 
 </html>

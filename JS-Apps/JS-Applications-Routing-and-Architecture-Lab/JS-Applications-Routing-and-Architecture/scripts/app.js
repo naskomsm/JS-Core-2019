@@ -2,23 +2,24 @@ const app = Sammy("#main", function () {
     this.use('Handlebars', 'hbs');
 
     // Home
-    this.get('#/home', homeController.getHome);
-
+    this.get('#/home',homeController.homePage);
+    
     // About
-    this.get('#/about',homeController.getAbout);
+    this.get('#/about',homeController.aboutPage);
 
     // Catalog
-    this.get('#/catalog',homeController.getCatalog);
-
-    // User
-    this.get('#/register', userController.getRegister);
-    this.get('#/login', userController.getLogin);
-
-    this.post('#/register', userController.postRegister);
-    this.post('#/login', userController.postLogin);
+    this.get('#/catalog',homeController.catalogPage);
     
-    this.get('#/logout', userController.logout);
+    // Login
+    this.get('#/login',userController.loginPage);
+    this.post('#/login',userController.loginPost);
 
+    // Register
+    this.get('#/register',userController.registerPage);
+    this.post('#/register',userController.registerPost);
+
+    // Logout
+    this.get('#/logout', userController.logout);
 });
 
 (() => {

@@ -1,65 +1,56 @@
 const homeController = function () {
-    const getHome = function (context) {
+    const homePage = function (context) {
         const loggedIn = storage.getData('userInfo') !== null;
-        const hasTeam = storage.getData('teamInfo') !== null;
-
-        if (loggedIn) {
-            const username = JSON.parse(storage.getData('userInfo')).username;
-            context.loggedIn = loggedIn;
-            context.username = username;
-
-            if(hasTeam){
-                const teams = JSON.parse(storage.getData('teamInfo')).teams; // ??
-                context.hasTeam = hasTeam;
-                context.teams = teams;
-            }
-        }
-
-        context.loadPartials({
-            header: "../views/common/header.hbs",
-            footer: "../views/common/footer.hbs"
-        }).then(function () {
-            this.partial('../views/home/home.hbs')
-        })
-    };
-
-    const getAbout = function (context) {
-        const loggedIn = storage.getData('userInfo') !== null;
-
+        
         if (loggedIn) {
             const username = JSON.parse(storage.getData('userInfo')).username;
             context.loggedIn = loggedIn;
             context.username = username;
         }
 
+        // loads the header and footer into the home.hbs then calls the home.hbs
         context.loadPartials({
-            header: "../views/common/header.hbs",
-            footer: "../views/common/footer.hbs"
-        }).then(function () {
-            this.partial('../views/about/about.hbs')
-        })
-    };
+            header: '../views/common/header.hbs',
+            footer: '../views/common/footer.hbs',
+        }).then(function () { this.partial('../views/home/home.hbs') });
+    };  
 
-    const getCatalog = function (context){
+    const aboutPage = function(context){
         const loggedIn = storage.getData('userInfo') !== null;
-
+        
         if (loggedIn) {
             const username = JSON.parse(storage.getData('userInfo')).username;
             context.loggedIn = loggedIn;
             context.username = username;
         }
 
+        // loads the header and footer into the about.hbs then calls the about.hbs
         context.loadPartials({
-            header: "../views/common/header.hbs",
-            footer: "../views/common/footer.hbs"
-        }).then(function () {
-            this.partial('../views/catalog/teamCatalog.hbs')
-        })
+            header: '../views/common/header.hbs',
+            footer: '../views/common/footer.hbs',
+        }).then(function () { this.partial('../views/about/about.hbs') });
     };
 
+    const catalogPage = function(context){
+        const loggedIn = storage.getData('userInfo') !== null;
+        
+        if (loggedIn) {
+            const username = JSON.parse(storage.getData('userInfo')).username;
+            context.loggedIn = loggedIn;
+            context.username = username;
+        }
+
+        // ????
+        context.loadPartials({
+            header: '../views/common/header.hbs',
+            footer: '../views/common/footer.hbs',
+            team: '../views/catalog/team.hbs'
+        }).then(function () { this.partial('../views/catalog/teamCatalog.hbs') });
+    };
+    
     return {
-        getHome,
-        getAbout,
-        getCatalog
+        homePage,
+        aboutPage,
+        catalogPage
     };
 }();

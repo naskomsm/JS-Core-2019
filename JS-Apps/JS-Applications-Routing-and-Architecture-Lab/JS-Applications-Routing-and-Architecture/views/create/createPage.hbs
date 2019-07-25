@@ -1,19 +1,9 @@
-{{> header}}
 <div class="container">
-    <div>
-        <h1>Create Page</h1>
-        <form action="#/create" method="post">
-            <div class="form-group">
-                <label for="name">Team Name:</label>
-                <input class="form-control" type="text" id="name" name="name" />
-            </div>
-            <div class="form-group">
-                <label for="comment">Team Comment/Description: </label>
-                <input class="form-control" type="text" id="comment" name="comment" />
-            </div>
-            <input class="btn btn-default" type="submit" value="Create Team" />
-        </form>
-    </div>
+    {{> header}}
+        <div>
+            <h1>Create Page</h1>
+                {{> createForm}}
+        </div>
 </div>
 
 {{> footer}}
