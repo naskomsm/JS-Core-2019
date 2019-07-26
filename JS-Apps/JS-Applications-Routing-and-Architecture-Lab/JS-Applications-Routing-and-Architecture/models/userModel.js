@@ -21,7 +21,6 @@ const userModel = function () {
     };
 
     const login = function (params) {
-
         let url = `/user/${storage.appKey}/login`;
 
         let auth = btoa(`${params.username}:${params.password}`);
@@ -38,7 +37,6 @@ const userModel = function () {
     };
 
     const logout = function () {
-
         let url = `/user/${storage.appKey}/_logout`;
         let headers = {
             headers: {}
