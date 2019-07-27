@@ -15,8 +15,8 @@ const storage = function () {
         saveData('authToken', data._kmd.authtoken);
     };
 
-    const saveEvent = function(data){
-        saveData('eventInfo',data);
+    const saveEvents = function(data){
+        saveData('eventsInfo',data);
     };
 
     const deleteUser = function () {
@@ -30,6 +30,6 @@ const storage = function () {
         deleteUser,
         appKey,
         appSecret,
-        saveEvent
+        saveEvents
     }
 }();

@@ -8,12 +8,19 @@ const homeController = function () {
             context.username = username;
         }
 
-        context.loadPartials({
-            header: "../views/common/header.hbs",
-            footer: "../views/common/footer.hbs"
-        }).then(function () {
-            this.partial('../views/home/homePage.hbs');
-        })
+        userModel.getEvents(context.params)
+            .then(helper.handler)
+            .then(allEvents => {
+                context.events = allEvents;
+
+                context.loadPartials({
+                    header: "../views/common/header.hbs",
+                    footer: "../views/common/footer.hbs",
+                    eventsPage: "../views/events/eventsPage.hbs"
+                }).then(function () {
+                    this.partial('../views/home/homePage.hbs');
+                })
+            });
     };
 
     return {

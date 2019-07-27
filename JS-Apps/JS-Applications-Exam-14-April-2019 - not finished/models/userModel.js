@@ -68,10 +68,10 @@ const userModel = function () {
         return requester.post(url, headers);
     };  
 
-    const getEvents = function (params) {
-        const url = '/appdata/kid_Byo6HGQfS/events';
+    const getEvents = function () {
+        const url = 'https://baas.kinvey.com/appdata/kid_Byo6HGQfS/events';
         
-        let authToken = storage.getData('authTokenkid');
+        let authToken = storage.getData('authToken');
 
         let authString = `Kinvey ${authToken}`;
 

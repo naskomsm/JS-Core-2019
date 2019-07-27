@@ -78,29 +78,6 @@ const userController = function () {
         })
     };
 
-    const eventsPage = function (context) {
-        const loggedIn = storage.getData('userInfo') !== null;
-        const hasAnyEvents = storage.getData('eventInfo') !== null;
-
-        if (loggedIn) {
-            const username = JSON.parse(storage.getData('userInfo')).username;
-            context.loggedIn = loggedIn;
-            context.username = username;
-        }
-
-        context.hasAnyEvents = hasAnyEvents;
-
-        context.loadPartials({
-            header: "../views/common/header.hbs",
-            footer: "../views/common/footer.hbs",
-            eventNotFoundPage: "../views/events/eventNotFoundPage.hbs",
-            events: userModel.getEvents(context.params)
-
-        }).then(function () {
-            this.partial('../views/events/eventsPage.hbs');
-        })
-    };
-
     const organizePage = function (context) {
         const loggedIn = storage.getData('userInfo') !== null;
 
@@ -116,15 +93,12 @@ const userController = function () {
         }).then(function () {
             this.partial('../views/events/organizeEventPage.hbs');
         })
-    };
+    }
 
-    const organizeEvent = function (context) {
+    const organizePost = function (context) {
         userModel.saveEvent(context.params)
             .then(helper.handler)
-            .then(data => {
-                storage.saveEvent(data);
-                userController.eventsPage(context);
-            });
+            .then(userController.eventsPage(context));
     };
 
     return {
@@ -133,9 +107,8 @@ const userController = function () {
         registerPage,
         registerPost,
         userPage,
+        logout,
         organizePage,
-        eventsPage,
-        organizeEvent,
-        logout
+        organizePost,
     };
 }();
