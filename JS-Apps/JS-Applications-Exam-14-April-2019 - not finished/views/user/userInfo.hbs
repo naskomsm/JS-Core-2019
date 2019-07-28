@@ -3,10 +3,12 @@
     <img class="profile-img" src="./images/user.png" />
     <div class="profile-info">
         <p>Username: <small>{{username}}</small></p>
-        <p class="infoType">Organizer of HERE SHOULD BE NUMBER{{numberOfEvents}} events.</p>
-        <p>LED ZEPPELIN Convert</p>
-        <p>Techno Party</p>
+        <p class="infoType">Organizer of {{currentUserEventsCount}} events.</p>
+        {{#each currentUserEvents}}
+            <p>{{name}}</p>
+        {{else}}
         <p>No events</p>
+        {{/each}}
     </div>
 </div>
 {{> footer}}

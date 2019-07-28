@@ -45,7 +45,7 @@ const userModel = function () {
         return requester.post(url, headers);
     };
 
-    const saveEvent = function (params) {
+    const eventPost = function (params) {
         let data = {
             name: params.name,
             dateTime: params.dateTime,
@@ -68,7 +68,7 @@ const userModel = function () {
         return requester.post(url, headers);
     };  
 
-    const getEvents = function () {
+    const getAllEvents = function () {
         const url = 'https://baas.kinvey.com/appdata/kid_Byo6HGQfS/events';
         
         let authToken = storage.getData('authToken');
@@ -88,7 +88,7 @@ const userModel = function () {
         register,
         login,
         logout,
-        saveEvent,
-        getEvents
+        eventPost,
+        getAllEvents
     }
 }();

@@ -19,6 +19,10 @@ const storage = function () {
         saveData('eventsInfo',data);
     };
 
+    const saveCurrentUserEvents = function(data){
+        saveData('currentUserEvents',data);
+    };
+
     const deleteUser = function () {
         localStorage.removeItem('userInfo' + appKey);
         localStorage.removeItem('authToken' + appKey);
@@ -30,6 +34,7 @@ const storage = function () {
         deleteUser,
         appKey,
         appSecret,
-        saveEvents
+        saveEvents,
+        saveCurrentUserEvents
     }
 }();

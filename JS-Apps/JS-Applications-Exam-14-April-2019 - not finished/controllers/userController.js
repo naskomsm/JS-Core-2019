@@ -62,13 +62,25 @@ const userController = function () {
 
     const userPage = function (context) {
         const loggedIn = storage.getData('userInfo') !== null;
+        let userId;
 
         if (loggedIn) {
             const username = JSON.parse(storage.getData('userInfo')).username;
+            userId = JSON.parse(storage.getData('userInfo'))._id;
             context.loggedIn = loggedIn;
             context.username = username;
         }
 
+        userModel.getAllEvents()
+            .then(helper.handler)
+            .then(events => {
+                storage.saveCurrentUserEvents(events.filter(event => event._acl.creator == userId))
+            }); 
+
+        const currentUserEvents = JSON.parse(storage.getData('currentUserEvents'));
+        const currentUserEventsCount = JSON.parse(storage.getData('currentUserEvents')).length;
+        context.currentUserEventsCount = currentUserEventsCount;
+        context.currentUserEvents = currentUserEvents;
 
         context.loadPartials({
             header: "../views/common/header.hbs",
@@ -96,9 +108,9 @@ const userController = function () {
     }
 
     const organizePost = function (context) {
-        userModel.saveEvent(context.params)
+        userModel.eventPost(context.params)
             .then(helper.handler)
-            .then(userController.eventsPage(context));
+            .then(homeController.homePage(context));
     };
 
     return {
