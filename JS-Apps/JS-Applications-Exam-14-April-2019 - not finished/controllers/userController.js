@@ -75,7 +75,7 @@ const userController = function () {
             .then(helper.handler)
             .then(events => {
                 storage.saveCurrentUserEvents(events.filter(event => event._acl.creator == userId))
-            }); 
+            });
 
         const currentUserEvents = JSON.parse(storage.getData('currentUserEvents'));
         const currentUserEventsCount = JSON.parse(storage.getData('currentUserEvents')).length;
@@ -113,6 +113,36 @@ const userController = function () {
             .then(homeController.homePage(context));
     };
 
+    const handleEventDetails = function (context) {
+        const loggedIn = storage.getData('userInfo') !== null;
+
+        if (loggedIn) {
+            const username = JSON.parse(storage.getData('userInfo')).username;
+            context.loggedIn = loggedIn;
+            context.username = username;
+        }
+
+        const eventId = context.params.id;
+
+        const events = JSON.parse(storage.getData('eventsInfo'));
+        const searchedEvent = events.filter(event => event._id == eventId)[0];
+        context.searchedEvent = searchedEvent;
+        const creatorId = searchedEvent._acl.creator;
+        
+        userModel.getSearchedUser(creatorId)
+            .then(helper.handler)
+            .then(creator => {
+                context.creator = creator;
+                
+                context.loadPartials({
+                    header: "../views/common/header.hbs",
+                    footer: "../views/common/footer.hbs"
+                }).then(function () {
+                    this.partial('../views/events/eventDetailsPage.hbs');
+                }) 
+            });
+    };
+
     return {
         loginPage,
         loginPost,
@@ -122,5 +152,6 @@ const userController = function () {
         logout,
         organizePage,
         organizePost,
+        handleEventDetails
     };
 }();

@@ -35,6 +35,6 @@ const storage = function () {
         appKey,
         appSecret,
         saveEvents,
-        saveCurrentUserEvents
+        saveCurrentUserEvents,
     }
 }();

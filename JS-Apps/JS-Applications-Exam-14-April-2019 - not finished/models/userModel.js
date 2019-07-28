@@ -84,11 +84,28 @@ const userModel = function () {
         return requester.get(url, headers);
     };  
 
+    const getSearchedUser = function (creatorId) {
+        const url = `https://baas.kinvey.com/user/kid_Byo6HGQfS/${creatorId}`;
+        
+        let authToken = storage.getData('authToken');
+
+        let authString = `Kinvey ${authToken}`;
+
+        let headers = {
+            headers: {
+                Authorization: authString
+            }
+        };
+
+        return requester.get(url, headers);
+    };
+
     return {
         register,
         login,
         logout,
         eventPost,
-        getAllEvents
+        getAllEvents,
+        getSearchedUser
     }
 }();
