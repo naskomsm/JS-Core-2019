@@ -21,7 +21,13 @@ const app = Sammy("#main", function () {
     // events
     this.get('#/organize', userController.organizePage);
     this.post('#/organize', userController.organizePost);
+    
     this.get('#/:id',userController.handleEventDetails);
+
+    this.get('#/:id/edit',userController.editPage);
+    this.post('#/:id/edit',userController.editPut);
+
+    this.get('#/:id/delete',userController.deleteEvent);
 });
 
 (() => {

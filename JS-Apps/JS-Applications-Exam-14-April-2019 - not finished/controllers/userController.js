@@ -62,11 +62,9 @@ const userController = function () {
 
     const userPage = function (context) {
         const loggedIn = storage.getData('userInfo') !== null;
-        let userId;
 
         if (loggedIn) {
             const username = JSON.parse(storage.getData('userInfo')).username;
-            userId = JSON.parse(storage.getData('userInfo'))._id;
             context.loggedIn = loggedIn;
             context.username = username;
         }
@@ -74,13 +72,13 @@ const userController = function () {
         userModel.getAllEvents()
             .then(helper.handler)
             .then(events => {
+                const userId = JSON.parse(storage.getData('userInfo'))._id;
                 storage.saveCurrentUserEvents(events.filter(event => event._acl.creator == userId))
             });
 
         const currentUserEvents = JSON.parse(storage.getData('currentUserEvents'));
-        const currentUserEventsCount = JSON.parse(storage.getData('currentUserEvents')).length;
-        context.currentUserEventsCount = currentUserEventsCount;
         context.currentUserEvents = currentUserEvents;
+        context.currentUserEventsCount = currentUserEvents.length;
 
         context.loadPartials({
             header: "../views/common/header.hbs",
@@ -128,19 +126,48 @@ const userController = function () {
         const searchedEvent = events.filter(event => event._id == eventId)[0];
         context.searchedEvent = searchedEvent;
         const creatorId = searchedEvent._acl.creator;
-        
+
         userModel.getSearchedUser(creatorId)
             .then(helper.handler)
             .then(creator => {
                 context.creator = creator;
-                
+
                 context.loadPartials({
                     header: "../views/common/header.hbs",
                     footer: "../views/common/footer.hbs"
                 }).then(function () {
                     this.partial('../views/events/eventDetailsPage.hbs');
-                }) 
+                })
             });
+    };
+
+    const editPage = function (context) {
+        const loggedIn = storage.getData('userInfo') !== null;
+
+        if (loggedIn) {
+            const username = JSON.parse(storage.getData('userInfo')).username;
+            context.loggedIn = loggedIn;
+            context.username = username;
+        }
+
+        context.loadPartials({
+            header: "../views/common/header.hbs",
+            footer: "../views/common/footer.hbs"
+        }).then(function () {
+            this.partial('../views/events/editEventPage.hbs');
+        })
+    };
+
+    const editEvent = function (context) {
+        userModel.editEvent(context.params)
+            .then(helper.handler)
+            .then(homeController.homePage(context));
+    };
+
+    const deleteEvent = function (context) {
+        userModel.deleteEvent(context.params)
+            .then(helper.handler)
+            .then(homeController.homePage(context));
     };
 
     return {
@@ -152,6 +179,9 @@ const userController = function () {
         logout,
         organizePage,
         organizePost,
-        handleEventDetails
+        handleEventDetails,
+        editPage,
+        editEvent,
+        deleteEvent
     };
 }();

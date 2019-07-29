@@ -72,7 +72,6 @@ const userModel = function () {
         const url = 'https://baas.kinvey.com/appdata/kid_Byo6HGQfS/events';
         
         let authToken = storage.getData('authToken');
-
         let authString = `Kinvey ${authToken}`;
 
         let headers = {
@@ -100,12 +99,54 @@ const userModel = function () {
         return requester.get(url, headers);
     };
 
+    const editEvent = function(params){
+        let data = {
+            name: params.name,
+            dateTime: params.dateTime,
+            description: params.description,
+            imageURL: params.imageURL,
+            peopleInterestedIn: params.peopleInterestedIn,
+            organizer: params.organizer
+        };
+
+        const url = `https://baas.kinvey.com/appdata/kid_Byo6HGQfS/events/${params.id}`;
+
+        let authToken = storage.getData('authToken');
+        let authString = `Kinvey ${authToken}`;
+
+        let headers = {
+            headers: {
+                Authorization: authString
+            },
+            body: JSON.stringify(data)
+        };
+
+        return requester.put(url, headers);
+    };
+    
+    const deleteEvent = function (params){
+        const url = `https://baas.kinvey.com/appdata/kid_Byo6HGQfS/events/${params.id}`;
+
+        let authToken = storage.getData('authToken');
+        let authString = `Kinvey ${authToken}`;
+
+        let headers = {
+            headers: {
+                Authorization: authString
+            }
+        };
+
+        return requester.del(url, headers);
+    }
+
     return {
         register,
         login,
         logout,
         eventPost,
         getAllEvents,
-        getSearchedUser
+        getSearchedUser,
+        editEvent,
+        deleteEvent
     }
 }();
