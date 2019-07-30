@@ -2,26 +2,29 @@ const app = Sammy("#rootElement", function () {
     this.use('Handlebars', 'hbs');
     
     // Home
-    this.get('#/home', homeController.homePage);
+    this.get('#/home', homeController.getHome);
 
     // User
-    this.get('#/login', userController.loginPage);
-    this.post('#/login', userController.loginPost);
+    this.get('#/login', userController.getLogin);
+    this.post('#/login', userController.postLogin);
 
-    this.get('#/register', userController.registerPage);
-    this.post('#/register', userController.registerPost);
+    this.get('#/register', userController.getRegister);
+    this.post('#/register', userController.postRegister);
 
     this.get('#/logout', userController.logout);
 
     // Events
-    this.get('#/createEvent',eventController.createEventPage);
-    this.post('#/createEvent',eventController.createEventPost);
+    this.get('#/createEvent',eventController.getCreateEvent);
+    this.post('#/createEvent',eventController.postCreateEvent);
 
-    this.get('#/eventDetails/:id',eventController.detailsEventPage);
+        // Details
+    this.get('#/eventDetails/:id',eventController.getDetailsEvent);
 
-    this.get('#/editEvent/:id',eventController.editEventPage);
+        // Edit
+    this.get('#/editEvent/:id',eventController.getEditEvent);
+    this.post('#/editEvent/:id',eventController.postEditEvent);
 
-    this.post('#/editEvent/:id',eventController.editEventPost);
+        // Delete
     this.get('#/deleteEvent/:id',eventController.deleteEventPost);
 
 });

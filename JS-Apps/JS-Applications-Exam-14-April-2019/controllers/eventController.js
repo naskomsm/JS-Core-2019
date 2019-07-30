@@ -1,5 +1,5 @@
 const eventController = function () {
-    const createEventPage = function (context) {
+    const getCreateEvent = function (context) {
         const loggedIn = storage.getData('userInfo') !== null;
 
         if (loggedIn) {
@@ -16,7 +16,7 @@ const eventController = function () {
         });
     };
 
-    const createEventPost = function (context) {
+    const postCreateEvent = function (context) {
         eventModel.createEvent(context.params)
             .then(helper.handler)
             .then(() => {
@@ -25,7 +25,7 @@ const eventController = function () {
             });
     };
 
-    const detailsEventPage = async function (context) {
+    const getDetailsEvent = async function (context) {
         const loggedIn = storage.getData('userInfo') !== null;
 
         if (loggedIn) {
@@ -50,7 +50,7 @@ const eventController = function () {
         });
     };
 
-    const editEventPage = async function (context) {
+    const getEditEvent = async function (context) {
         let response = await eventModel.getEvent(context.params.id);
         let event = await response.json();
 
@@ -72,24 +72,24 @@ const eventController = function () {
         });
     };
 
-    const editEventPost = function (context) {
+    const postEditEvent = function (context) {
         eventModel.editEvent(context.params)
             .then(helper.handler)
-            .then(homeController.homePage(context));
+            .then(homeController.getHome(context));
     };
 
     const deleteEventPost = function (context) {
         eventModel.deleteEvent(context.params.id)
             .then(helper.handler)
-            .then(homeController.homePage(context));
+            .then(homeController.getHome(context));
     };
 
     return {
-        createEventPage,
-        createEventPost,
-        detailsEventPage,
-        editEventPage,
-        editEventPost,
+        getCreateEvent,
+        postCreateEvent,
+        getDetailsEvent,
+        getEditEvent,
+        postEditEvent,
         deleteEventPost
     }
 }();

@@ -36,11 +36,9 @@ const eventModel = function () {
     };
 
     const editEvent = function (params){
-        let url = `/appdata/${storage.appKey}/events/${params.id}`; 
-        // let data = {
-
-        // }; // obekta bez Id
-        delete params.id; // ili nov object bez id property ili go triem
+        let url = `/appdata/${storage.appKey}/events/${params.id}`;
+        
+        delete params.id; 
 
         let headers = {
             headers: {},

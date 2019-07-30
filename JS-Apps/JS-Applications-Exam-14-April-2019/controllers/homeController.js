@@ -1,5 +1,5 @@
 const homeController = function () {
-    const homePage = async function (context) {
+    const getHome = async function (context) {
         const loggedIn = storage.getData('userInfo') !== null;
 
         if (loggedIn) {
@@ -26,6 +26,6 @@ const homeController = function () {
     };
 
     return {
-        homePage
+        getHome
     };
 }();

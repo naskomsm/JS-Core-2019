@@ -1,5 +1,5 @@
 const userController = function () {
-    const loginPage = function (context) {
+    const getLogin = function (context) {
         const loggedIn = storage.getData('userInfo') !== null;
 
         if (loggedIn) {
@@ -16,7 +16,7 @@ const userController = function () {
         })
     };
 
-    const loginPost = function (context) {
+    const postLogin = function (context) {
         helper.notify('loading');
         userModel.login(context.params)
             .then(helper.handler)
@@ -28,7 +28,7 @@ const userController = function () {
             })
     };
 
-    const registerPage = function (context) {
+    const getRegister = function (context) {
         const loggedIn = storage.getData('userInfo') !== null;
 
         if (loggedIn) {
@@ -45,7 +45,7 @@ const userController = function () {
         })
     };
 
-    const registerPost = function (context) {
+    const postRegister = function (context) {
         userModel.register(context.params)
             .then(helper.handler)
             .then(data => {
@@ -65,10 +65,10 @@ const userController = function () {
 
 
     return {
-        loginPage,
-        loginPost,
-        registerPage,
-        registerPost,
+        getLogin,
+        postLogin,
+        getRegister,
+        postRegister,
         logout
     };
 }();
