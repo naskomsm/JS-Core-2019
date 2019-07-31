@@ -1,4 +1,14 @@
 const helper = function () {
+    const addHeaderInfo = function (context) {
+        const loggedIn = storage.getData('userInfo') !== null;
+
+        if (loggedIn) {
+            const username = JSON.parse(storage.getData('userInfo')).username;
+            context.loggedIn = loggedIn;
+            context.username = username;
+        }
+    }
+
     const handler = function (response) {
         if (response.status >= 400) {
             stopNotify();
@@ -13,42 +23,8 @@ const helper = function () {
         return response;
     };
 
-    const passwordCheck = function (params) {
-        return params.password === params.repeatPassword;
-    };
-
-    const notify = function (type, textContent) {
-        let element = ''
-
-        switch (type) {
-            case "success":
-                element = document.getElementById('successBox');
-                element.textContent = textContent;
-                element.addEventListener('click', (event) => event.currentTarget.style.display = 'none');
-                break;
-            case "error":
-                element = document.getElementById('errorBox');
-                element.textContent = textContent;
-                element.addEventListener('click', (event) => event.currentTarget.style.display = 'none');
-                break;
-            case "loading":
-                element = document.getElementById('loadingBox');
-                element.textContent = 'Loading...';
-                element.addEventListener('click', (event) => event.currentTarget.style.display = 'none');
-                break;
-        }
-
-        element.style.display = 'block';
-    };
-
-    const stopNotify = function () {
-        Array.from(document.getElementById('notifications').children).forEach(child => child.style.display = 'none');
-    };
-
     return {
         handler,
-        passwordCheck,
-        notify,
-        stopNotify
+        addHeaderInfo
     };
 }();

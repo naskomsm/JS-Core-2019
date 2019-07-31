@@ -1,12 +1,6 @@
 const eventController = function () {
     const getCreateEvent = function (context) {
-        const loggedIn = storage.getData('userInfo') !== null;
-
-        if (loggedIn) {
-            const username = JSON.parse(storage.getData('userInfo')).username;
-            context.loggedIn = loggedIn;
-            context.username = username;
-        }
+        helper.addHeaderInfo(context);
 
         context.loadPartials({
             header: './views/common/header.hbs',
@@ -20,19 +14,12 @@ const eventController = function () {
         eventModel.createEvent(context.params)
             .then(helper.handler)
             .then(() => {
-                //notify for success
-                homeController.homePage(context);
+                context.redirect('#/home')
             });
     };
 
     const getDetailsEvent = async function (context) {
-        const loggedIn = storage.getData('userInfo') !== null;
-
-        if (loggedIn) {
-            const username = JSON.parse(storage.getData('userInfo')).username;
-            context.loggedIn = loggedIn;
-            context.username = username;
-        }
+        helper.addHeaderInfo(context);
 
         let response = await eventModel.getEvent(context.params.id);
         let event = await response.json();
@@ -51,18 +38,12 @@ const eventController = function () {
     };
 
     const getEditEvent = async function (context) {
+        helper.addHeaderInfo(context);
+
         let response = await eventModel.getEvent(context.params.id);
         let event = await response.json();
 
         context.event = event;
-
-        const loggedIn = storage.getData('userInfo') !== null;
-
-        if (loggedIn) {
-            const username = JSON.parse(storage.getData('userInfo')).username;
-            context.loggedIn = loggedIn;
-            context.username = username;
-        }
 
         context.loadPartials({
             header: './views/common/header.hbs',
@@ -75,13 +56,24 @@ const eventController = function () {
     const postEditEvent = function (context) {
         eventModel.editEvent(context.params)
             .then(helper.handler)
-            .then(homeController.getHome(context));
+            .then(context.redirect('#/home'));
     };
 
     const deleteEventPost = function (context) {
         eventModel.deleteEvent(context.params.id)
             .then(helper.handler)
-            .then(homeController.getHome(context));
+            .then(context.redirect('#/home'));
+    };
+
+    const joinEvent = async function (context) {
+        helper.addHeaderInfo(context);
+
+        let response = await eventModel.getEvent(context.params.id);
+        let event = await response.json();
+
+        eventModel.joinEvent(event)
+            .then(helper.handler)
+            .then(context.redirect('#/home'));
     };
 
     return {
@@ -90,6 +82,7 @@ const eventController = function () {
         getDetailsEvent,
         getEditEvent,
         postEditEvent,
-        deleteEventPost
+        deleteEventPost,
+        joinEvent
     }
 }();

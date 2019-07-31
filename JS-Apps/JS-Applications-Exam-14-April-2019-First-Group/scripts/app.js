@@ -12,20 +12,23 @@ const app = Sammy("#rootElement", function () {
     this.post('#/register', userController.postRegister);
 
     this.get('#/logout', userController.logout);
+    this.get('#/userInfo',userController.getUserInfo);
 
     // Events
     this.get('#/createEvent',eventController.getCreateEvent);
     this.post('#/createEvent',eventController.postCreateEvent);
 
         // Details
-    this.get('#/eventDetails/:id',eventController.getDetailsEvent);
+        this.get('#/eventDetails/:id',eventController.getDetailsEvent);
 
         // Edit
-    this.get('#/editEvent/:id',eventController.getEditEvent);
-    this.post('#/editEvent/:id',eventController.postEditEvent);
+        this.get('#/editEvent/:id',eventController.getEditEvent);
+        this.post('#/editEvent/:id',eventController.postEditEvent);
 
         // Delete
-    this.get('#/deleteEvent/:id',eventController.deleteEventPost);
+        this.get('#/deleteEvent/:id',eventController.deleteEventPost);
+        // Join
+        this.get('#/joinEvent/:id',eventController.joinEvent);
 
 });
 

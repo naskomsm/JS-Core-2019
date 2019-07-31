@@ -1,19 +1,13 @@
 const homeController = function () {
     const getHome = async function (context) {
-        const loggedIn = storage.getData('userInfo') !== null;
+        helper.addHeaderInfo(context);
 
-        if (loggedIn) {
-            const username = JSON.parse(storage.getData('userInfo')).username;
-            context.loggedIn = loggedIn;
-            context.username = username;
-
-            try {
-                let response = await eventModel.getAllEvents();
-                let events = await response.json();
-                context.events = events;
-            } catch (e) {
-                console.log(e);
-            }
+        try {
+            const response = await eventModel.getAllEvents();
+            const events = await response.json();
+            context.events = events;
+        } catch (e) {
+            console.log(e);
         }
 
         context.loadPartials({

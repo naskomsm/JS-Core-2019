@@ -10,14 +10,13 @@ const eventModel = function () {
 
         let headers = {
             body: JSON.stringify(data),
-            headers: {} // look at makeRequest in helper
+            headers: {}
         };
 
         return requester.post(url,headers);
     };
 
     const getAllEvents = function(){
-
         let url = `/appdata/${storage.appKey}/events`;
         let headers = {
             headers: {}
@@ -57,11 +56,26 @@ const eventModel = function () {
         return requester.del(url,headers);
     };
 
+    const joinEvent = function (event){
+        let url = `/appdata/${storage.appKey}/events/${event._id}`;
+        
+        const data = { ...event };
+        data.peopleInterestedIn++;
+
+        let headers = {
+            headers: {},
+            body: JSON.stringify(data)
+        };
+
+        return requester.put(url,headers);
+    };
+
     return {
         createEvent,
         getAllEvents,
         getEvent,
         editEvent,
-        deleteEvent
+        deleteEvent,
+        joinEvent
     };
 }();
