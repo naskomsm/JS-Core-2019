@@ -56,7 +56,13 @@ const recipeController = function () {
     const postEdit = function (context) {
         recipeModel.editRecipe(context.params)
             .then(helper.handler)
-            .then(homeController.getHome(context));
+            .then(context.redirect('#/home'));
+    };
+
+    const deleteRecipe = function (context){
+        recipeModel.deleteRecipe(context.params.id)
+            .then(helper.handler)
+            .then(context.redirect('#/home'));
     };
 
     return {
@@ -64,6 +70,7 @@ const recipeController = function () {
         postCreate,
         getRecipe,
         getEdit,
-        postEdit
+        postEdit,
+        deleteRecipe
     }
 }();

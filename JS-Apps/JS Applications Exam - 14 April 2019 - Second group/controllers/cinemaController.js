@@ -139,6 +139,7 @@ const cinemaController = function () {
 
         cinemaModel.buyTicket(movie)
             .then(helper.handler)
+            .then(context.redirect('#/cinema'));
     };
 
     return {

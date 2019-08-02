@@ -24,6 +24,8 @@ const app = Sammy("#rooter", function () {
     this.get('#/edit/:id',recipeController.getEdit);
     this.post('#/edit/:id',recipeController.postEdit);
 
+    // Delete
+    this.get('#/delete/:id',recipeController.deleteRecipe);
 });
 
 (() => {

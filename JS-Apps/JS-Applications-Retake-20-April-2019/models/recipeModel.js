@@ -59,7 +59,7 @@ const recipeModel = function () {
         return requester.get(url, headers);
     };
 
-    const editRecipe = function (params){
+    const editRecipe = function (params) {
         let url = `/appdata/${storage.appKey}/recipes/${params.id}`;
 
         delete params.id;
@@ -103,10 +103,20 @@ const recipeModel = function () {
         return requester.put(url, headers);
     }
 
+    const deleteRecipe = function (id) {
+        let url = `/appdata/${storage.appKey}/recipes/${id}`;
+        let headers = {
+            headers: {}
+        };
+
+        return requester.del(url, headers);
+    };
+
     return {
         create,
         getAllRecipes,
         getRecipe,
-        editRecipe
+        editRecipe,
+        deleteRecipe
     }
 }();
