@@ -112,11 +112,26 @@ const recipeModel = function () {
         return requester.del(url, headers);
     };
 
+    const likeRecipe = function (recipe) {
+        let url = `/appdata/${storage.appKey}/recipes/${recipe._id}`;
+
+        const data = { ...recipe };
+        data.likesCounter++;
+
+        let headers = {
+            headers: {},
+            body: JSON.stringify(data)
+        };
+
+        return requester.put(url, headers);
+    };
+
     return {
         create,
         getAllRecipes,
         getRecipe,
         editRecipe,
-        deleteRecipe
+        deleteRecipe,
+        likeRecipe
     }
 }();

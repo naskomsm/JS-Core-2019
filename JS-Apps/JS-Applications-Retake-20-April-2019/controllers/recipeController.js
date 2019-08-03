@@ -59,8 +59,17 @@ const recipeController = function () {
             .then(context.redirect('#/home'));
     };
 
-    const deleteRecipe = function (context){
+    const deleteRecipe = function (context) {
         recipeModel.deleteRecipe(context.params.id)
+            .then(helper.handler)
+            .then(context.redirect('#/home'));
+    };
+
+    const like = async function (context) {
+        let response = await recipeModel.getRecipe(context.params.id);
+        let recipe = await response.json();
+
+        recipeModel.likeRecipe(recipe)
             .then(helper.handler)
             .then(context.redirect('#/home'));
     };
@@ -71,6 +80,7 @@ const recipeController = function () {
         getRecipe,
         getEdit,
         postEdit,
-        deleteRecipe
+        deleteRecipe,
+        like
     }
 }();
