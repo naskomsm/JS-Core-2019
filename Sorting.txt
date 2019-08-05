@@ -1,0 +1,29 @@
+1. Sort objects in array by given criteria
+let array = [ { name: 'Atanas' , age: 15 } , { name: 'Gosho', age: 18 } ];
+array.sort((a,b) => a.name.localeCompare(b.name)); // for strings
+array.sort((a,b) => a.age - b.age); // for numbers
+
+2. Sort array
+let array = [7,4,2,8,5,4,9];
+array.sort((a,b) => a - b)
+
+
+2. Sort Object by keys
+Object.entries(this.kids).sort((a, b) => b[0].localeCompare(a[0]));
+numbers are grades !
+let kids = { 7: ["Gosho","Pesho","Ivan"] , 1 ["Gosho","Pesho","Ivan"], 2 ["Gosho","Pesho","Ivan"]} 
+
+
+3. ADVANCED SHIT
+ Object.filter = (obj, predicate) =>
+        Object.keys(obj)
+            .filter(key => predicate(obj[key]))
+            .reduce((res, key) => (res[key] = obj[key], res), {});
+
+    var filteredSpaceships = Object.filter(spaceships, score => score > 0);
+
+
+4. SORT by 2 criterias 
+ output.sort(function (a, b) {
+        return a.area - b.area || a.width - b.width
+    });
