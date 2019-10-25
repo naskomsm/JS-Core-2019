@@ -1,1 +1,1 @@
-# JS-Core-2019
+# JS-Core-2019 - SoftUni
