@@ -1,53 +1,55 @@
 function solve() {
-    let info = document.getElementsByTagName('span')[0];
+    const elements = {
+        infoBox: document.getElementsByClassName("info")[0],
+        departBtn: document.getElementById("depart"),
+        arriveBtn: document.getElementById("arrive")
+    };
 
-    let currentStop = {
-        name: 'depot',
+    const currentStop = {
+        name: '',
         id: 'depot'
     };
 
-    function depart() {
-        function display(busStop) {
-            const { name, next } = busStop;
+    const depart = () => {
+        const move = (json) => {
+            const { name, next } = json
 
             currentStop.name = name;
             currentStop.id = next;
 
-            info.textContent = `Next stop ${currentStop.name}`;
+            elements.infoBox.textContent = `Next stop ${name}`;
 
-            document.getElementById('depart').disabled = true;
-            document.getElementById('arrive').disabled = false;
-        }
+            elements.arriveBtn.disabled = false;
+            elements.departBtn.disabled = true;
+        };
 
-        let url = `https://judgetests.firebaseio.com/schedule/${currentStop.id}.json `;
+        const url = `https://judgetests.firebaseio.com/schedule/${currentStop.id}.json`;
+
         fetch(url)
-            .then((response) => {
-                if (response.ok) {
-                    return response.json();
-                }
-                else {
-                    displayError();
-                }
-            })
-            .then((data) => display(data))
-    }
+            .then(handler)
+            .then(json => move(json));
+    };
 
-    function arrive() {
-        info.textContent = `Arriving at ${currentStop.name}`;
+    const arrive = () => {
+        elements.infoBox.textContent = `Arriving at ${currentStop.name}`;
 
-        document.getElementById('depart').disabled = false;
-        document.getElementById('arrive').disabled = true;
-    }
+        elements.arriveBtn.disabled = true;
+        elements.departBtn.disabled = false;
+    };
 
-    function displayError() {
-        const stopInfo = document.getElementsByClassName('info')[0];
-        stopInfo.textContent = `Error`;
+    const handler = (response) => {
+        if (response.ok) {
+            return response.json();
+        }
+        else {
+            elements.infoBox.textContent = 'Error';
+        }
     }
 
     return {
         depart,
         arrive
-    };
-}
+    }
+};
 
-let result = solve();
+const result = solve();
